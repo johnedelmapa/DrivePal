@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "161443787641",
+    "firebase_url": "https://drivepal-73491.firebaseio.com",
+    "project_id": "drivepal-73491",
+    "storage_bucket": "drivepal-73491.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:161443787641:android:c24e216bee71a6b3",
+        "android_client_info": {
+          "package_name": "com.example.asus.drivepal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "161443787641-k484nt1mmte53pgnljvg6tpmakanatun.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.asus.drivepal",
+            "certificate_hash": "9e2404a63b1590e41ea4da539cd19f043673acfe"
+          }
+        },
+        {
+          "client_id": "161443787641-7514ks3f4tefgdb8luts6f358h4042mj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHOS9sOMP1b2JNo8lMHXrdyUdNcLTttH4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "161443787641-7514ks3f4tefgdb8luts6f358h4042mj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

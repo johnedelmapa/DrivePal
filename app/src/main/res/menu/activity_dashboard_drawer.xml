@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@mipmap/baseline_dashboard_black_24dp"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@mipmap/baseline_perm_identity_black_24dp"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_activityLog"
+            android:icon="@mipmap/baseline_photo_filter_black_24dp"
+            android:title="Activity Log" />
+        <item..
+            android:id="@+id/nav_help"
+            android:icon="@mipmap/baseline_live_help_black_24dp"
+            android:title="Help" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="About" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Logout" />
+    </group>
+
+
+</menu>

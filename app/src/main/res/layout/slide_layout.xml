@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/slideImageView"
+        android:layout_width="348dp"
+        android:layout_height="240dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        app:srcCompat="@mipmap/ic_group1_foreground" />
+
+    <TextView
+        android:id="@+id/slideHeading"
+        android:layout_width="348dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/slideImageView"
+        android:layout_centerHorizontal="true"
+        android:text="HEADING"
+        android:textAlignment="center"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/slideDescription"
+        android:layout_width="347dp"
+        android:layout_height="103dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="139dp"
+        android:lineSpacingExtra="10sp"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim "
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp" />
+</RelativeLayout>
