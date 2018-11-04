@@ -34,6 +34,7 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
     private DatabaseReference myRef;
     private String userID;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
