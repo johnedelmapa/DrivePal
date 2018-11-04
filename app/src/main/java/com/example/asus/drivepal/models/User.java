@@ -1,4 +1,4 @@
-package com.example.asus.drivepal;
+package com.example.asus.drivepal.models;
 
 public class User {
     public String fullname, email, licenseNo;

@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.example.asus.drivepal.models.Contact;
+import com.example.asus.drivepal.models.Vehicle;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,7 +21,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 
 public class Contact1Activity extends AppCompatActivity implements View.OnClickListener {
 
@@ -31,7 +33,6 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
     private String userID;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,24 +92,25 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private void showData(DataSnapshot dataSnapshot) {
-        for(DataSnapshot a : dataSnapshot.getChildren()){
 
+    private void showData(DataSnapshot dataSnapshot) {
+        for(DataSnapshot ds : dataSnapshot.getChildren()){
             Contact contact = new Contact();
-            contact.setGivenname(a.child(userID).getValue(Contact.class).getGivenname());
-            contact.setMiddlename(a.child(userID).getValue(Contact.class).getMiddlename());
-            contact.setFamilyname(a.child(userID).getValue(Contact.class).getFamilyname());
-            contact.setPhonenumber(a.child(userID).getValue(Contact.class).getPhonenumber());
-            contact.setEmail(a.child(userID).getValue(Contact.class).getEmail());
-            contact.setRelationship(a.child(userID).getValue(Contact.class).getRelationship());
+            contact.setGivenname(ds.child(userID).getValue(Contact.class).getGivenname());
+            contact.setMiddlename(ds.child(userID).getValue(Contact.class).getMiddlename());
+            contact.setFamilyname(ds.child(userID).getValue(Contact.class).getFamilyname());
+            contact.setPhonenumber(ds.child(userID).getValue(Contact.class).getPhonenumber());
+            contact.setEmail(ds.child(userID).getValue(Contact.class).getEmail());
+            contact.setRelationship(ds.child(userID).getValue(Contact.class).getRelationship());
+
 
             editTextGivenname.setText(contact.getGivenname());
             editTextMiddlename.setText(contact.getMiddlename());
             editTextFamilyname.setText(contact.getFamilyname());
+
             editTextphoneNumber.setText(contact.getPhonenumber());
             editTextEmail.setText(contact.getEmail());
             editTextRelationship.setText(contact.getRelationship());
-
         }
     }
 
@@ -207,12 +209,10 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-
         switch(view.getId()) {
             case R.id.buttonAdd:
                 AddContact();
                 break;
         }
-
     }
 }

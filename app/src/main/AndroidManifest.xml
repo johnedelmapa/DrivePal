@@ -20,10 +20,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,10 +38,14 @@
             android:name=".DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ContactsActivity" android:theme="@style/DrivePalTheme"
-            android:parentActivityName=".DashboardActivity" />
-        <activity android:name=".VehiclesActivity" android:theme="@style/DrivePalTheme"
-            android:parentActivityName=".DashboardActivity" />
+        <activity
+            android:name=".ContactsActivity"
+            android:parentActivityName=".DashboardActivity"
+            android:theme="@style/DrivePalTheme" />
+        <activity
+            android:name=".VehiclesActivity"
+            android:parentActivityName=".DashboardActivity"
+            android:theme="@style/DrivePalTheme" />
         <activity android:name=".WelcomeActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -58,10 +62,15 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".Vehicle1Activity" android:theme="@style/DrivePalTheme"
-            android:parentActivityName=".VehiclesActivity" />
-        <activity android:name=".Contact1Activity"  android:theme="@style/DrivePalTheme"
-            android:parentActivityName=".ContactsActivity"></activity>
+        <activity
+            android:name=".Vehicle1Activity"
+            android:parentActivityName=".VehiclesActivity"
+            android:theme="@style/DrivePalTheme" />
+        <activity
+            android:name=".Contact1Activity"
+            android:parentActivityName=".ContactsActivity"
+            android:theme="@style/DrivePalTheme" />
+        <activity android:name=".ContactActivity"></activity>
     </application>
 
 </manifest>
