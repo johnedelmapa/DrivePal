@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -56,6 +57,7 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextRelationship = (EditText) findViewById(R.id.editTextRelationship);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
+
 
         findViewById(R.id.buttonAdd).setOnClickListener(this);
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -10,25 +10,15 @@
     android:background="@color/lightGreen"
     tools:context=".Contact1Activity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="37dp"
-        android:text="Tap on camera to choose profile picture"
-        android:textAlignment="center"
-        android:textColor="#ffffffff"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
-
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="170dp"
-        android:layout_height="170dp"
-        android:layout_alignBottom="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:background="@android:drawable/ic_menu_camera"
-        android:scaleType="centerCrop" />
+        android:layout_width="144dp"
+        android:layout_height="144dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="26dp"
+        android:padding="16dp"
+        android:background="@drawable/personwhite"/>
+
 
     <TextView
         android:id="@+id/textView"
@@ -49,17 +39,14 @@
         android:id="@+id/editTextGivenname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/editTextMiddlename"
-        android:layout_centerHorizontal="true"
         android:ems="10"
-        android:hint="Give name"
+        android:hint="Given name"
         android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/editTextMiddlename"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:ems="10"
         android:hint="Middle name"
         android:inputType="textPersonName" />
@@ -68,8 +55,6 @@
         android:id="@+id/editTextFamilyname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/editTextphoneNumber"
-        android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="Family name"
         android:inputType="textPersonName" />
@@ -78,8 +63,6 @@
         android:id="@+id/editTextphoneNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/editTextEmail"
-        android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="Phone number"
         android:inputType="textPersonName" />
@@ -88,8 +71,6 @@
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/editTextRelationship"
-        android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="Email"
         android:inputType="textPersonName" />
@@ -98,9 +79,6 @@
         android:id="@+id/editTextRelationship"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="78dp"
         android:ems="10"
         android:hint="Relationship"
         android:inputType="textPersonName" />
@@ -110,9 +88,7 @@
         style="@style/Base.TextAppearance.AppCompat.Body1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="11dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/background_login"
         android:clickable="true"
         android:padding="16dp"
@@ -129,5 +105,4 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-
-</RelativeLayout>
+</LinearLayout>
