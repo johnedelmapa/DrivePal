@@ -106,7 +106,7 @@ public class ContactActivity extends AppCompatActivity implements View.OnClickLi
                 relationship
         );
 
-        FirebaseDatabase.getInstance().getReference("Contacts/ContactOne")
+        FirebaseDatabase.getInstance().getReference("Contacts/ContactOne/ContactInfo")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(contact).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

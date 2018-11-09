@@ -105,7 +105,7 @@ public class VehicleActivity extends AppCompatActivity implements View.OnClickLi
                 engineno
         );
 
-        FirebaseDatabase.getInstance().getReference("Vehicles/VehicleOne")
+        FirebaseDatabase.getInstance().getReference("Vehicles/VehicleOne/VehicleInfo")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(vehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

@@ -32,6 +32,9 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
             case R.id.textViewContact1:
                 startActivity(new Intent(this, Contact1Activity.class));
                 break;
+            case R.id.textViewContact2:
+                startActivity(new Intent(this, Contact2Activity.class));
+                break;
         }
     }
 }

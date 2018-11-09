@@ -21,7 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class Vehicle1Activity extends AppCompatActivity implements View.OnClickListener {
+public class Vehicle2Activity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "ViewDatabase";
     private ProgressBar progressBar;
@@ -37,14 +37,14 @@ public class Vehicle1Activity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vehicle1);
+        setContentView(R.layout.activity_vehicle2);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Vehicle One");
+        actionBar.setTitle("Vehicle Two");
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("Vehicles/VehicleOne");
+        myRef = mFirebaseDatabase.getReference().child("Vehicles/VehicleTwo");
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
@@ -81,7 +81,13 @@ public class Vehicle1Activity extends AppCompatActivity implements View.OnClickL
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                showData(dataSnapshot);
+
+                if (dataSnapshot.exists()) {
+                    Toast.makeText(Vehicle2Activity.this, "No Records", Toast.LENGTH_SHORT).show();
+                    showData(dataSnapshot);
+                } else {
+
+                }
             }
 
             @Override
@@ -94,6 +100,7 @@ public class Vehicle1Activity extends AppCompatActivity implements View.OnClickL
     private void showData(DataSnapshot dataSnapshot) {
         for(DataSnapshot ds : dataSnapshot.getChildren()){
             Vehicle uInfo = new Vehicle();
+
             uInfo.setManufacturer(ds.child(userID).getValue(Vehicle.class).getManufacturer());
             uInfo.setModel(ds.child(userID).getValue(Vehicle.class).getModel());
             uInfo.setType(ds.child(userID).getValue(Vehicle.class).getType());
@@ -195,7 +202,7 @@ public class Vehicle1Activity extends AppCompatActivity implements View.OnClickL
                 engineno
         );
 
-        FirebaseDatabase.getInstance().getReference("Vehicles/VehicleOne/VehicleInfo")
+        FirebaseDatabase.getInstance().getReference("Vehicles/VehicleTwo/VehicleInfo")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(vehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -203,7 +210,7 @@ public class Vehicle1Activity extends AppCompatActivity implements View.OnClickL
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     //finish();
-                    Toast.makeText(Vehicle1Activity.this, "Vehicle Registered", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Vehicle2Activity.this, "Vehicle Registered", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }

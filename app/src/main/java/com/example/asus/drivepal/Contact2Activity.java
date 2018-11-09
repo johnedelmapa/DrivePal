@@ -1,18 +1,16 @@
 package com.example.asus.drivepal;
 
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.example.asus.drivepal.models.Contact;
-import com.example.asus.drivepal.models.Vehicle;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,9 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class Contact1Activity extends AppCompatActivity implements View.OnClickListener {
+public class Contact2Activity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "ViewDatabase";
+    private static final String TAG = "ViewDatabase2";
     private ProgressBar progressBar;
     private EditText editTextGivenname, editTextMiddlename, editTextFamilyname, editTextphoneNumber, editTextEmail, editTextRelationship;
 
@@ -39,27 +37,27 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact1);
+        setContentView(R.layout.activity_contact2);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Contact One");
+        actionBar.setTitle("Contact Two");
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("Contacts/ContactOne");
+        myRef = mFirebaseDatabase.getReference().child("Contacts/ContactTwo");
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
-        editTextGivenname = (EditText) findViewById(R.id.editTextGivenname);
-        editTextMiddlename = (EditText) findViewById(R.id.editTextMiddlename);
-        editTextFamilyname = (EditText) findViewById(R.id.editTextFamilyname);
-        editTextphoneNumber = (EditText) findViewById(R.id.editTextphoneNumber);
-        editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-        editTextRelationship = (EditText) findViewById(R.id.editTextRelationship);
+        editTextGivenname = (EditText) findViewById(R.id.editTextGivenname2);
+        editTextMiddlename = (EditText) findViewById(R.id.editTextMiddlename2);
+        editTextFamilyname = (EditText) findViewById(R.id.editTextFamilyname2);
+        editTextphoneNumber = (EditText) findViewById(R.id.editTextphoneNumber2);
+        editTextEmail = (EditText) findViewById(R.id.editTextEmail2);
+        editTextRelationship = (EditText) findViewById(R.id.editTextRelationship2);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
 
 
-        findViewById(R.id.buttonAdd).setOnClickListener(this);
+        findViewById(R.id.buttonAdd2).setOnClickListener(this);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -82,9 +80,15 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
+
+
+
                 showData(dataSnapshot);
+
             }
 
             @Override
@@ -110,10 +114,31 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
             editTextGivenname.setText(contact.getGivenname());
             editTextMiddlename.setText(contact.getMiddlename());
             editTextFamilyname.setText(contact.getFamilyname());
-
             editTextphoneNumber.setText(contact.getPhonenumber());
             editTextEmail.setText(contact.getEmail());
             editTextRelationship.setText(contact.getRelationship());
+
+
+//            if(editTextGivenname.getText().toString().isEmpty() && editTextMiddlename.getText().toString().isEmpty()
+//                    && editTextFamilyname.getText().toString().isEmpty() && editTextphoneNumber.getText().toString().isEmpty()
+//                    &&  editTextEmail.getText().toString().isEmpty() && editTextRelationship.getText().toString().isEmpty()) {
+//                editTextGivenname.setText("null");
+//                editTextMiddlename.setText("null");
+//                editTextFamilyname.setText("null");
+//                editTextphoneNumber.setText("null");
+//                editTextEmail.setText("null");
+//                editTextRelationship.setText("null");
+//                return;
+//            } else {
+//                editTextGivenname.setText(contact.getGivenname());
+//                editTextMiddlename.setText(contact.getMiddlename());
+//                editTextFamilyname.setText(contact.getFamilyname());
+//                editTextphoneNumber.setText(contact.getPhonenumber());
+//                editTextEmail.setText(contact.getEmail());
+//                editTextRelationship.setText(contact.getRelationship());
+//                return;
+//            }
+
         }
     }
 
@@ -193,7 +218,7 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
                 relationship
         );
 
-        FirebaseDatabase.getInstance().getReference("Contacts/ContactOne/ContactInfo")
+        FirebaseDatabase.getInstance().getReference("Contacts/ContactTwo/ContactInfo")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(contact).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -201,7 +226,7 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     //finish();
-                    Toast.makeText(Contact1Activity.this, "Contact Registered", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Contact2Activity.this, "Contact Registered", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -213,7 +238,7 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         switch(view.getId()) {
-            case R.id.buttonAdd:
+            case R.id.buttonAdd2:
                 AddContact();
                 break;
         }

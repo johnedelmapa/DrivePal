@@ -70,7 +70,14 @@
             android:name=".Contact1Activity"
             android:parentActivityName=".ContactsActivity"
             android:theme="@style/DrivePalTheme" />
-        <activity android:name=".ContactActivity"></activity>
+        <activity android:name=".ContactActivity" />
+        <activity
+            android:name=".Contact2Activity"
+            android:parentActivityName=".ContactsActivity"
+            android:theme="@style/DrivePalTheme" />
+        <activity android:name=".Vehicle2Activity"
+            android:parentActivityName=".VehiclesActivity"
+            android:theme="@style/DrivePalTheme" />
     </application>
 
 </manifest>
