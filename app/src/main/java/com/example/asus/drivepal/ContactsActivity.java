@@ -19,9 +19,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.textViewContact2).setOnClickListener(this);
         findViewById(R.id.textViewContact3).setOnClickListener(this);
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Contacts");
     }
@@ -34,6 +31,9 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.textViewContact2:
                 startActivity(new Intent(this, Contact2Activity.class));
+                break;
+            case R.id.textViewContact3:
+                startActivity(new Intent(this, Contact3Activity.class));
                 break;
         }
     }

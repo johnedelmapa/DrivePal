@@ -63,16 +63,16 @@ public class Contact2Activity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    toastMessage("Successfully signed in with: " + user.getEmail());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    toastMessage("Successfully signed out.");
-                }
-                // ...
+//                if (user != null) {
+//                    // User is signed in
+//                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+//                    toastMessage("Successfully signed in with: " + user.getEmail());
+//                } else {
+//                    // User is signed out
+//                    Log.d(TAG, "onAuthStateChanged:signed_out");
+//                    toastMessage("Successfully signed out.");
+//                }
+//                // ...
             }
 
         };
@@ -80,12 +80,6 @@ public class Contact2Activity extends AppCompatActivity implements View.OnClickL
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-
-
 
                 showData(dataSnapshot);
 
@@ -110,34 +104,12 @@ public class Contact2Activity extends AppCompatActivity implements View.OnClickL
             contact.setEmail(ds.child(userID).getValue(Contact.class).getEmail());
             contact.setRelationship(ds.child(userID).getValue(Contact.class).getRelationship());
 
-
             editTextGivenname.setText(contact.getGivenname());
             editTextMiddlename.setText(contact.getMiddlename());
             editTextFamilyname.setText(contact.getFamilyname());
             editTextphoneNumber.setText(contact.getPhonenumber());
             editTextEmail.setText(contact.getEmail());
             editTextRelationship.setText(contact.getRelationship());
-
-
-//            if(editTextGivenname.getText().toString().isEmpty() && editTextMiddlename.getText().toString().isEmpty()
-//                    && editTextFamilyname.getText().toString().isEmpty() && editTextphoneNumber.getText().toString().isEmpty()
-//                    &&  editTextEmail.getText().toString().isEmpty() && editTextRelationship.getText().toString().isEmpty()) {
-//                editTextGivenname.setText("null");
-//                editTextMiddlename.setText("null");
-//                editTextFamilyname.setText("null");
-//                editTextphoneNumber.setText("null");
-//                editTextEmail.setText("null");
-//                editTextRelationship.setText("null");
-//                return;
-//            } else {
-//                editTextGivenname.setText(contact.getGivenname());
-//                editTextMiddlename.setText(contact.getMiddlename());
-//                editTextFamilyname.setText(contact.getFamilyname());
-//                editTextphoneNumber.setText(contact.getPhonenumber());
-//                editTextEmail.setText(contact.getEmail());
-//                editTextRelationship.setText(contact.getRelationship());
-//                return;
-//            }
 
         }
     }

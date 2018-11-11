@@ -62,16 +62,16 @@ public class Vehicle2Activity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    toastMessage("Successfully signed in with: " + user.getEmail());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    toastMessage("Successfully signed out.");
-                }
-                // ...
+//                if (user != null) {
+//                    // User is signed in
+//                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+//                    toastMessage("Successfully signed in with: " + user.getEmail());
+//                } else {
+//                    // User is signed out
+//                    Log.d(TAG, "onAuthStateChanged:signed_out");
+//                    toastMessage("Successfully signed out.");
+//                }
+//                // ...
             }
 
         };
@@ -83,7 +83,7 @@ public class Vehicle2Activity extends AppCompatActivity implements View.OnClickL
                 // whenever data at this location is updated.
 
                 if (dataSnapshot.exists()) {
-                    Toast.makeText(Vehicle2Activity.this, "No Records", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(Vehicle2Activity.this, "No Records", Toast.LENGTH_SHORT).show();
                     showData(dataSnapshot);
                 } else {
 
@@ -107,15 +107,6 @@ public class Vehicle2Activity extends AppCompatActivity implements View.OnClickL
             uInfo.setColor(ds.child(userID).getValue(Vehicle.class).getColor());
             uInfo.setPlateno(ds.child(userID).getValue(Vehicle.class).getPlateno());
             uInfo.setEngineno(ds.child(userID).getValue(Vehicle.class).getEngineno());
-
-//            //display all the information
-//            Log.d(TAG, "showData: manufacturer: " + uInfo.getManufacturer());
-//            Log.d(TAG, "showData: model: " + uInfo.getModel());
-//            Log.d(TAG, "showData: type: " + uInfo.getType());
-//            Log.d(TAG, "showData: color: " + uInfo.getColor());
-//            Log.d(TAG, "showData: plateno: " + uInfo.getPlateno());
-//            Log.d(TAG, "showData: engineno: " + uInfo.getEngineno());
-
 
             editTextManufacturer.setText(uInfo.getManufacturer());
             editTextModel.setText(uInfo.getModel());

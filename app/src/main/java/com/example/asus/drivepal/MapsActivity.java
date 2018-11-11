@@ -57,8 +57,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import java.util.Formatter;
+import java.util.Locale;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Context;
+import android.support.v4.app.ActivityCompat;
+import android.view.Menu;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.TextView;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
+
+
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, IBaseGpsListener,
         GoogleApiClient.OnConnectionFailedListener{
 
     @Override
@@ -68,8 +85,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "onMapReady: map is ready");
+        Toast.makeText(this, "Navigate and pin your destination", Toast.LENGTH_LONG).show();
+        Log.d(TAG, "onMapReady: Navigate and pin your destination");
         mMap = googleMap;
 
 
@@ -120,7 +137,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //widgets
     private AutoCompleteTextView mSearchText;
-    private ImageView mGps, mInfo, mPlacePicker;
+    private ImageView mGps, mInfo, mPlacePicker, mSatellite;
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
@@ -135,14 +152,113 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        //Lines of codes for GPS SPEEDOMETER
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        this.updateSpeed(null);
+
+        CheckBox chkUseMetricUntis = (CheckBox) this.findViewById(R.id.chkMetricUnits);
+        chkUseMetricUntis.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // TODO Auto-generated method stub
+                MapsActivity.this.updateSpeed(null);
+            }
+        }); //END Lines of codes for GPS SPEEDOMETER
+
         mSearchText = (AutoCompleteTextView) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gps);
         mInfo = (ImageView) findViewById(R.id.place_info);
         mPlacePicker = (ImageView) findViewById(R.id.place_picker);
+        mSatellite = (ImageView) findViewById(R.id.satellite);
 
         getLocationPermission();
+    }
+
+    // All required functions of gps speedometer
+    public void finish()
+    {
+        super.finish();
+        System.exit(0);
+    }
+
+    private void updateSpeed(CLocation location) {
+        // TODO Auto-generated method stub
+        float nCurrentSpeed = 0;
+
+        if(location != null)
+        {
+            location.setUseMetricunits(this.useMetricUnits());
+            nCurrentSpeed = location.getSpeed();
+        }
+
+        Formatter fmt = new Formatter(new StringBuilder());
+        fmt.format(Locale.US, "%5.1f", nCurrentSpeed);
+        String strCurrentSpeed = fmt.toString();
+        strCurrentSpeed = strCurrentSpeed.replace(' ', '0');
+
+        String strUnits = "miles/hour";
+        if(this.useMetricUnits())
+        {
+            strUnits = "KPHS";
+        }
+
+        TextView txtCurrentSpeed = (TextView) this.findViewById(R.id.txtCurrentSpeed);
+        txtCurrentSpeed.setText(strCurrentSpeed + " " + strUnits);
+    }
+
+    private boolean useMetricUnits() {
+        // TODO Auto-generated method stub
+        CheckBox chkUseMetricUnits = (CheckBox) this.findViewById(R.id.chkMetricUnits);
+        return chkUseMetricUnits.isChecked();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        // TODO Auto-generated method stub
+        if(location != null)
+        {
+            CLocation myLocation = new CLocation(location, this.useMetricUnits());
+            this.updateSpeed(myLocation);
+        }
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onGpsStatusChanged(int event) {
+        // TODO Auto-generated method stub
+
+    } //End required functions of gps speedometer
+
 
     private void init(){
         Log.d(TAG, "init: initializing");
@@ -213,6 +329,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.e(TAG, "onClick: GooglePlayServicesRepairableException: " + e.getMessage() );
                 } catch (GooglePlayServicesNotAvailableException e) {
                     Log.e(TAG, "onClick: GooglePlayServicesNotAvailableException: " + e.getMessage() );
+                }
+            }
+        });
+
+        mSatellite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL) {
+                    mMap.setMapType(mMap.MAP_TYPE_SATELLITE);
+                } else {
+                    mMap.setMapType(mMap.MAP_TYPE_NORMAL);
                 }
             }
         });
