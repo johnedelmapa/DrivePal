@@ -81,7 +81,13 @@ public class Vehicle1Activity extends AppCompatActivity implements View.OnClickL
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                showData(dataSnapshot);
+                try { showData(dataSnapshot);
+
+                } catch(Exception e) {
+
+                    Toast.makeText(Vehicle1Activity.this, "No Registered Vehicle", Toast.LENGTH_SHORT).show();
+
+                }
             }
 
             @Override
@@ -211,7 +217,6 @@ public class Vehicle1Activity extends AppCompatActivity implements View.OnClickL
         });
 
     }
-
 
     @Override
     public void onClick(View view) {

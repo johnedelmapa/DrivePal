@@ -84,7 +84,13 @@ public class Vehicle2Activity extends AppCompatActivity implements View.OnClickL
 
                 if (dataSnapshot.exists()) {
 //                    Toast.makeText(Vehicle2Activity.this, "No Records", Toast.LENGTH_SHORT).show();
-                    showData(dataSnapshot);
+                    try { showData(dataSnapshot);
+
+                    } catch(Exception e) {
+
+                        Toast.makeText(Vehicle2Activity.this, "No Registered Vehicle", Toast.LENGTH_SHORT).show();
+
+                    }
                 } else {
 
                 }

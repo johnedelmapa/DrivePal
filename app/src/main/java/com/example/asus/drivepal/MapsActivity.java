@@ -91,7 +91,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         //Custom Map
-
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -105,8 +104,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         } //Custom map end
-
-
 
 
         if (mLocationPermissionsGranted) {
@@ -152,6 +149,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        //Never Sleep the phone
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //Lines of codes for GPS SPEEDOMETER
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -212,7 +211,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String strUnits = "miles/hour";
         if(this.useMetricUnits())
         {
-            strUnits = "KPHS";
+            strUnits = "Km/h";
         }
 
         TextView txtCurrentSpeed = (TextView) this.findViewById(R.id.txtCurrentSpeed);

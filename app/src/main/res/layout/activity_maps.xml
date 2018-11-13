@@ -30,7 +30,7 @@
             android:id="@+id/ic_magnify"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_magnify"/>
+            android:src="@drawable/ic_magnify_green"/>
 
         <AutoCompleteTextView
             android:singleLine="true"
@@ -56,7 +56,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="228dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_gps" />
+        android:background="@drawable/circle"
+        android:src="@drawable/ic_gps_green" />
 
     <ImageView
         android:id="@+id/place_info"
@@ -66,7 +67,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="126dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_info" />
+        android:background="@drawable/circle"
+        android:src="@drawable/ic_info_green" />
 
     <ImageView
         android:id="@+id/place_picker"
@@ -76,7 +78,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="76dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_map" />
+        android:background="@drawable/circle"
+        android:src="@drawable/ic_maps_green" />
 
     <ImageView
         android:id="@+id/satellite"
@@ -86,7 +89,10 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="176dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_sat" />
+        android:background="@drawable/circle"
+        android:src="@drawable/ic_sat_green" />
+
+
 
     <RelativeLayout
         android:id="@+id/relLayout2"
@@ -106,8 +112,9 @@
             android:gravity="center"
             android:singleLine="true"
             android:text="SPEED"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold|italic" />
 
         <TextView
             android:id="@+id/txtCurrentSpeed"
@@ -117,8 +124,9 @@
             android:gravity="center"
             android:singleLine="true"
             android:text="000.0"
-            android:textSize="28dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="28dp"
             android:textStyle="bold" />
 
         <TextView
@@ -130,8 +138,9 @@
             android:layout_marginBottom="13dp"
             android:gravity="center"
             android:singleLine="true"
-            android:text="KPHS"
+            android:text="Km/h"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold" />
 
         <CheckBox
@@ -139,11 +148,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
+            android:textColor="@color/colorPrimaryDark"
             android:visibility="gone" />
 
     </RelativeLayout>
-
-
 
 
 

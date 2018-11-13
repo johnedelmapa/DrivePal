@@ -81,8 +81,13 @@ public class Contact2Activity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                showData(dataSnapshot);
+                try { showData(dataSnapshot); 
+                
+                } catch(Exception e) {
 
+                    Toast.makeText(Contact2Activity.this, "No Registered Contact", Toast.LENGTH_SHORT).show();
+
+                }
             }
 
             @Override
@@ -110,7 +115,6 @@ public class Contact2Activity extends AppCompatActivity implements View.OnClickL
             editTextphoneNumber.setText(contact.getPhonenumber());
             editTextEmail.setText(contact.getEmail());
             editTextRelationship.setText(contact.getRelationship());
-
         }
     }
 
