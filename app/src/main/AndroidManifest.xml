@@ -10,7 +10,6 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -67,26 +66,21 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
 
-
         <!-- Contacts -->
 
         <activity android:name=".ContactActivity" />
-
         <activity
             android:name=".Contact1Activity"
             android:parentActivityName=".ContactsActivity"
             android:theme="@style/DrivePalTheme" />
-
         <activity
             android:name=".Contact2Activity"
             android:parentActivityName=".ContactsActivity"
             android:theme="@style/DrivePalTheme" />
-
         <activity
             android:name=".Contact3Activity"
             android:parentActivityName=".ContactsActivity"
-            android:theme="@style/DrivePalTheme"/>
-
+            android:theme="@style/DrivePalTheme" />
 
         <!-- Vehicles -->
         <activity
@@ -97,7 +91,8 @@
             android:name=".Vehicle1Activity"
             android:parentActivityName=".VehiclesActivity"
             android:theme="@style/DrivePalTheme" />
-
+        <activity android:name=".ChangePasswordActivity" />
+        <activity android:name=".ForgetPasswordActivity"></activity>
     </application>
 
 </manifest>

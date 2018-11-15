@@ -26,22 +26,13 @@
         android:background="@android:drawable/ic_menu_camera"
         android:scaleType="centerCrop" />
 
-    <EditText
-        android:id="@+id/editTextDisplayName"
-        android:layout_width="379dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Display name"/>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/editTextDisplayName"
-        android:layout_alignParentStart="true"
+        android:layout_above="@+id/editTextEmail"
+        android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif"
         android:paddingTop="18dp"
         android:text="Personal Information:"
@@ -55,28 +46,18 @@
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/editTextName"
+        android:layout_centerInParent="true"
         android:ems="10"
         android:hint="Email"
         android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/editTextLicenseNo"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword" />
 
     <EditText
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/editTextDisplayName"
+        android:layout_below="@+id/editTextEmail"
+        android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="Fullname"
         android:inputType="textPersonName" />
@@ -85,8 +66,9 @@
         android:id="@+id/editTextLicenseNo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/editTextEmail"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="166dp"
         android:ems="10"
         android:hint="Licence No."
         android:inputType="textPersonName" />
@@ -99,11 +81,28 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="14dp"
+        android:layout_marginBottom="94dp"
         android:background="@drawable/background_signup"
         android:clickable="true"
         android:padding="16dp"
-        android:text="SAVE"
+        android:text="SAVE PROFILE"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/buttonUpdatePassword"
+        style="@style/Base.TextAppearance.AppCompat.Body1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="22dp"
+        android:background="@drawable/background_signup"
+        android:clickable="true"
+        android:padding="16dp"
+        android:text="CHANGE PASSWORD"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="#fff"

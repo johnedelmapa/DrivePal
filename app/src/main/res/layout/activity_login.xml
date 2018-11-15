@@ -28,7 +28,7 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/editTextPassword"
+        android:id="@+id/editTextResetPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"

@@ -107,15 +107,6 @@ public class Vehicle1Activity extends AppCompatActivity implements View.OnClickL
             uInfo.setPlateno(ds.child(userID).getValue(Vehicle.class).getPlateno());
             uInfo.setEngineno(ds.child(userID).getValue(Vehicle.class).getEngineno());
 
-//            //display all the information
-//            Log.d(TAG, "showData: manufacturer: " + uInfo.getManufacturer());
-//            Log.d(TAG, "showData: model: " + uInfo.getModel());
-//            Log.d(TAG, "showData: type: " + uInfo.getType());
-//            Log.d(TAG, "showData: color: " + uInfo.getColor());
-//            Log.d(TAG, "showData: plateno: " + uInfo.getPlateno());
-//            Log.d(TAG, "showData: engineno: " + uInfo.getEngineno());
-
-
             editTextManufacturer.setText(uInfo.getManufacturer());
             editTextModel.setText(uInfo.getModel());
             editTextType.setText(uInfo.getType());

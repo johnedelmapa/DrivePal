@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +20,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     FirebaseAuth mAuth;
     EditText editTextEmail, editTextPassword;
+    TextView forgetPassword;
     ProgressBar progressBar;
 
     @Override
@@ -30,12 +31,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mAuth = FirebaseAuth.getInstance();
 
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        editTextPassword = (EditText) findViewById(R.id.editTextResetPassword);
+        forgetPassword = (TextView) findViewById(R.id.forgetPassword);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
 
         findViewById(R.id.buttonSignup).setOnClickListener(this);
         findViewById(R.id.buttonLogin).setOnClickListener(this);
         findViewById(R.id.createAccount).setOnClickListener(this);
+        findViewById(R.id.forgetPassword).setOnClickListener(this);
 
 
     }
@@ -113,6 +116,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.buttonLogin:
                 userLogin();
+                break;
+
+            case R.id.forgetPassword:
+                startActivity(new Intent(this, ForgetPasswordActivity.class));
                 break;
 
 

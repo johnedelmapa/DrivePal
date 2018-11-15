@@ -5,20 +5,18 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.storage.StorageManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,17 +31,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.io.IOException;
-import java.util.zip.Inflater;
 
 public class Profile extends Fragment implements View.OnClickListener {
 
@@ -59,6 +49,8 @@ public class Profile extends Fragment implements View.OnClickListener {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
     private String userID;
+    FirebaseAuth firebaseAuth;
+    String FinalCurrentUser;
 
     private static final String TAG = "ViewDatabase";
 
@@ -69,7 +61,6 @@ public class Profile extends Fragment implements View.OnClickListener {
         getActivity().setTitle("Profile");
 
         mAuth = FirebaseAuth.getInstance();
-        editTextDisplayName = (EditText)(getView().findViewById(R.id.editTextDisplayName));
         imageView = (ImageView) (getView().findViewById(R.id.imageView));
         progressBar = (ProgressBar) (getView().findViewById(R.id.progressbar));
 
@@ -78,36 +69,49 @@ public class Profile extends Fragment implements View.OnClickListener {
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
-        editTextEmail = (EditText)(getView().findViewById(R.id.editTextEmail));
-        editTextPassword = (EditText)(getView().findViewById(R.id.editTextPassword));
-        editTextName = (EditText)(getView().findViewById(R.id.editTextName));
-        editTextLicenseNo = (EditText)(getView().findViewById(R.id.editTextLicenseNo));
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("Users");
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        FinalCurrentUser = firebaseUser.getUid();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataS: dataSnapshot.getChildren()){
+                    if(FinalCurrentUser.equals(dataS.getRef().getKey())) {
+                        final String name = dataS.child("fullname").getValue(String.class);
+                        final  String email = dataS.child("email").getValue(String.class);
+                        final  String licenseNo = dataS.child("licenseNo").getValue(String.class);
+
+                        editTextEmail = (EditText)(getView().findViewById(R.id.editTextEmail));
+                        //editTextPassword = (EditText)(getView().findViewById(R.id.editTextPassword));
+                        editTextName = (EditText)(getView().findViewById(R.id.editTextName));
+                        editTextLicenseNo = (EditText)(getView().findViewById(R.id.editTextLicenseNo));
+
+                        editTextEmail.setText(email);
+                        editTextName.setText(name);
+                        editTextLicenseNo.setText(licenseNo);
+                    }
+
+                    onDataChange(dataS);
                 }
-                // ...
+
+
             }
 
-        };
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
+            }
 
+        }); //End Ass
 
         imageView.setOnClickListener(new View.OnClickListener(){
 
-                                         @Override
-                                         public  void onClick(View view) { showImageChooser();
-                                         }
-                                     });
-
+            @Override
+            public  void onClick(View view) { showImageChooser(); }});
         loadUserInformation();
 
         getView().findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener(){
@@ -130,12 +134,6 @@ public class Profile extends Fragment implements View.OnClickListener {
                         .load(user.getPhotoUrl().toString())
                         .into(imageView);
             }
-            if (user.getDisplayName() != null) {
-                //    String displayName = user.getDisplayName();
-                editTextDisplayName.setText(user.getDisplayName());
-            } if (user.getEmail() != null) {
-                editTextEmail.setText(user.getEmail());
-            }
         }
 
 
@@ -143,19 +141,11 @@ public class Profile extends Fragment implements View.OnClickListener {
 
 
     private void saveUserInformation(){
-        String displayName = editTextDisplayName.getText().toString();
-
-        if(displayName.isEmpty()) {
-            editTextDisplayName.setError("Name Required");
-            editTextDisplayName.requestFocus();
-            return;
-        }
-
         FirebaseUser user = mAuth.getCurrentUser();
 
         if(user!=null && profileImageUrl !=null){
             final UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(displayName).setPhotoUri(Uri.parse(profileImageUrl))
+                    .setPhotoUri(Uri.parse(profileImageUrl))
                     .build();
             user.updateProfile(profile)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {

@@ -30,7 +30,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_signup1);
 
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        editTextPassword = (EditText) findViewById(R.id.editTextResetPassword);
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextLicenseNo = (EditText) findViewById(R.id.editTextLicenseNo);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);

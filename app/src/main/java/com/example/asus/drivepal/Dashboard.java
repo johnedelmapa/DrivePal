@@ -75,9 +75,6 @@ public class Dashboard extends Fragment implements View.OnClickListener {
                 startActivity(intent2);
                 break;
 
-          
-
-
         }
 
 
