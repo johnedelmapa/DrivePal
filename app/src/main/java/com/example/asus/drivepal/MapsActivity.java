@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -114,8 +115,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
+
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mMap.setTrafficEnabled(true);
+
+            // Enable / Disable Compass icon
+            mMap.getUiSettings().setCompassEnabled(true);
+
+            // Enable / Disable Rotate gesture
+            mMap.getUiSettings().setRotateGesturesEnabled(true);
 
             init();
         }
@@ -134,7 +143,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //widgets
     private AutoCompleteTextView mSearchText;
-    private ImageView mGps, mInfo, mPlacePicker, mSatellite;
+    private ImageView mGps, mInfo, mPlacePicker, mSatellite, mTraffic;
+    private RelativeLayout lTraffic;
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
@@ -182,6 +192,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mInfo = (ImageView) findViewById(R.id.place_info);
         mPlacePicker = (ImageView) findViewById(R.id.place_picker);
         mSatellite = (ImageView) findViewById(R.id.satellite);
+        mTraffic = (ImageView) findViewById(R.id.info_traffic);
+        lTraffic = (RelativeLayout) findViewById(R.id.traffic_layout);
 
         getLocationPermission();
     }
@@ -208,14 +220,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String strCurrentSpeed = fmt.toString();
         strCurrentSpeed = strCurrentSpeed.replace(' ', '0');
 
-        String strUnits = "miles/hour";
-        if(this.useMetricUnits())
-        {
-            strUnits = "Km/h";
-        }
-
         TextView txtCurrentSpeed = (TextView) this.findViewById(R.id.txtCurrentSpeed);
-        txtCurrentSpeed.setText(strCurrentSpeed + " " + strUnits);
+        txtCurrentSpeed.setText(strCurrentSpeed);
     }
 
     private boolean useMetricUnits() {
@@ -340,6 +346,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } else {
                     mMap.setMapType(mMap.MAP_TYPE_NORMAL);
                 }
+            }
+        });
+
+        mTraffic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(lTraffic.getVisibility() == (View.GONE)) {
+                    lTraffic.setVisibility(View.VISIBLE);
+                } else
+                    lTraffic.setVisibility(View.GONE);
+
             }
         });
 

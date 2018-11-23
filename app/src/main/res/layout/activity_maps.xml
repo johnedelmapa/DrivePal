@@ -82,6 +82,18 @@
         android:src="@drawable/ic_maps_green" />
 
     <ImageView
+        android:id="@+id/info_traffic"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignEnd="@+id/relLayout1"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="53dp"
+        android:background="@drawable/circle"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_traffic" />
+
+
+    <ImageView
         android:id="@+id/satellite"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -92,23 +104,22 @@
         android:background="@drawable/circle"
         android:src="@drawable/ic_sat_green" />
 
-
     <RelativeLayout
         android:id="@+id/relLayout3"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignStart="@+id/relLayout1"
-        android:layout_alignTop="@+id/place_picker"
-        android:background="@drawable/circle"
+        android:layout_width="193dp"
+        android:layout_height="43dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/plain_white_border"
         android:elevation="10dp">
 
         <TextView
             android:id="@+id/limit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="43dp"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="12dp"
+            android:layout_marginStart="10dp"
             android:gravity="center"
             android:singleLine="true"
             android:text="LIMIT"
@@ -119,11 +130,12 @@
         <TextView
             android:id="@+id/txtSpeedLimit"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_height="44dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:gravity="center"
             android:singleLine="true"
-            android:text="60"
+            android:text="000.0"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="28dp"
@@ -131,38 +143,36 @@
 
         <TextView
             android:id="@+id/kphss"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="13dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/txtSpeedLimit"
             android:gravity="center"
             android:singleLine="true"
             android:text="Km/h"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/colorPrimaryDark"
+            android:textSize="14dp"
             android:textStyle="bold" />
-
 
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/relLayout2"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/relLayout1"
-        android:layout_marginTop="187dp"
-        android:background="@drawable/white_border"
+        android:layout_width="192dp"
+        android:layout_height="43dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/plain_white_border"
         android:elevation="10dp">
 
         <TextView
             android:id="@+id/distancetext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="43dp"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="-126dp"
+            android:layout_marginStart="10dp"
             android:gravity="center"
             android:singleLine="true"
             android:text="SPEED"
@@ -173,8 +183,10 @@
         <TextView
             android:id="@+id/txtCurrentSpeed"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_height="44dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="46dp"
             android:gravity="center"
             android:singleLine="true"
             android:text="000.0"
@@ -185,16 +197,16 @@
 
         <TextView
             android:id="@+id/kphs"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="13dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="-47dp"
+            android:layout_toEndOf="@+id/txtCurrentSpeed"
             android:gravity="center"
             android:singleLine="true"
             android:text="Km/h"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/colorPrimaryDark"
+            android:textSize="14dp"
             android:textStyle="bold" />
 
         <CheckBox
@@ -207,4 +219,78 @@
 
     </RelativeLayout>
 
-</RelativeLayout>
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/traffic_layout"
+        android:layout_width="match_parent"
+        android:layout_height="268dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/place_info"
+        android:background="@drawable/white_border"
+        android:elevation="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="13dp"
+            android:text="Traffic Colors"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="68dp"
+            android:background="@color/lightgray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="78dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="The color code shows you the speed of traffic on the road."
+            android:textColor="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/lol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="26dp"
+            android:text="Green: No traffic delay."
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/lol"
+        android:layout_marginBottom="88dp"
+        android:text="Orange:Medium amount of traffic."
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/lol"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="31dp"
+            android:text="Red: Traffic delays. The darker the red, the slower the speed of traffic on the road."
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+
+    </RelativeLayout>

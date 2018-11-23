@@ -5,6 +5,8 @@
     <color name="colorAccent">#ffffff</color>
     <!--<color name="colorAccent">#FF4081</color>-->
     <color name="lightGreen">#02C8C8</color>
+    <color name="colorGreen">#00bfa5</color>
+    <color name="colorOrange">#ffa500</color>
     <color name="colorRed">#FF0000</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorTransparentWhite">#cccccc</color>

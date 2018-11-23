@@ -71,8 +71,11 @@ public class CLocation extends Location {
         if(!this.getUseMetricUnits())
         {
             //Convert meters/second to miles/hour
-            nSpeed = (nSpeed * 2.2369362920544f/3.6f);
-            nSpeed = nSpeed * 3.6f;
+            //nSpeed = (nSpeed * 2.2369362920544f/3.6f);
+
+            //Convert meter/second to kph
+            nSpeed = (nSpeed * 3.6f);
+            //nSpeed = nSpeed * 3.6f;
         }
         return nSpeed;
     }
