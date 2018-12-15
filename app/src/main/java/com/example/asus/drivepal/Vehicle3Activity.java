@@ -7,11 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.asus.drivepal.models.Contact;
 import com.example.asus.drivepal.models.Vehicle;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,11 +21,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class Contact3Activity extends AppCompatActivity implements View.OnClickListener {
+public class Vehicle3Activity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "ViewDatabase";
     private ProgressBar progressBar;
-    private EditText editTextGivenname, editTextMiddlename, editTextFamilyname, editTextphoneNumber, editTextEmail, editTextRelationship;
+    private EditText editTextManufacturer, editTextModel, editTextType, editTextColor, editTextPlateNo, editTextEngineNo;
+
 
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -35,29 +34,27 @@ public class Contact3Activity extends AppCompatActivity implements View.OnClickL
     private DatabaseReference myRef;
     private String userID;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact3);
+        setContentView(R.layout.activity_vehicle3);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Contact Three");
+        actionBar.setTitle("Vehicle Three");
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("Contacts/ContactThree");
+        myRef = mFirebaseDatabase.getReference().child("Vehicles/VehicleThree");
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
-        editTextGivenname = (EditText) findViewById(R.id.editTextGivenname);
-        editTextMiddlename = (EditText) findViewById(R.id.editTextMiddlename);
-        editTextFamilyname = (EditText) findViewById(R.id.editTextFamilyname);
-        editTextphoneNumber = (EditText) findViewById(R.id.editTextphoneNumber);
-        editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-        editTextRelationship = (EditText) findViewById(R.id.editTextRelationship);
+        editTextManufacturer = (EditText) findViewById(R.id.editTextManufacturer);
+        editTextModel = (EditText) findViewById(R.id.editTextModel);
+        editTextType = (EditText) findViewById(R.id.editTextType);
+        editTextColor = (EditText) findViewById(R.id.editTextColor);
+        editTextPlateNo = (EditText) findViewById(R.id.editTextPlateNo);
+        editTextEngineNo = (EditText) findViewById(R.id.editTextEngineNo);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
-
 
         findViewById(R.id.buttonAdd).setOnClickListener(this);
 
@@ -84,11 +81,17 @@ public class Contact3Activity extends AppCompatActivity implements View.OnClickL
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                try { showData(dataSnapshot);
 
-                } catch(Exception e) {
+                if (dataSnapshot.exists()) {
+//                    Toast.makeText(Vehicle2Activity.this, "No Records", Toast.LENGTH_SHORT).show();
+                    try { showData(dataSnapshot);
 
-                    Toast.makeText(Contact3Activity.this, "No Registered Contact", Toast.LENGTH_SHORT).show();
+                    } catch(Exception e) {
+
+                        Toast.makeText(Vehicle3Activity.this, "No Registered Vehicle", Toast.LENGTH_SHORT).show();
+
+                    }
+                } else {
 
                 }
             }
@@ -98,28 +101,26 @@ public class Contact3Activity extends AppCompatActivity implements View.OnClickL
 
             }
         });
-
     }
-
 
     private void showData(DataSnapshot dataSnapshot) {
         for(DataSnapshot ds : dataSnapshot.getChildren()){
-            Contact contact = new Contact();
-            contact.setGivenname(ds.child(userID).getValue(Contact.class).getGivenname());
-            contact.setMiddlename(ds.child(userID).getValue(Contact.class).getMiddlename());
-            contact.setFamilyname(ds.child(userID).getValue(Contact.class).getFamilyname());
-            contact.setPhonenumber(ds.child(userID).getValue(Contact.class).getPhonenumber());
-            contact.setEmail(ds.child(userID).getValue(Contact.class).getEmail());
-            contact.setRelationship(ds.child(userID).getValue(Contact.class).getRelationship());
+            Vehicle uInfo = new Vehicle();
 
+            uInfo.setManufacturer(ds.child(userID).getValue(Vehicle.class).getManufacturer());
+            uInfo.setModel(ds.child(userID).getValue(Vehicle.class).getModel());
+            uInfo.setType(ds.child(userID).getValue(Vehicle.class).getType());
+            uInfo.setColor(ds.child(userID).getValue(Vehicle.class).getColor());
+            uInfo.setPlateno(ds.child(userID).getValue(Vehicle.class).getPlateno());
+            uInfo.setEngineno(ds.child(userID).getValue(Vehicle.class).getEngineno());
 
-            editTextGivenname.setText(contact.getGivenname());
-            editTextMiddlename.setText(contact.getMiddlename());
-            editTextFamilyname.setText(contact.getFamilyname());
+            editTextManufacturer.setText(uInfo.getManufacturer());
+            editTextModel.setText(uInfo.getModel());
+            editTextType.setText(uInfo.getType());
 
-            editTextphoneNumber.setText(contact.getPhonenumber());
-            editTextEmail.setText(contact.getEmail());
-            editTextRelationship.setText(contact.getRelationship());
+            editTextColor.setText(uInfo.getColor());
+            editTextPlateNo.setText(uInfo.getPlateno());
+            editTextEngineNo.setText(uInfo.getEngineno());
         }
     }
 
@@ -141,72 +142,72 @@ public class Contact3Activity extends AppCompatActivity implements View.OnClickL
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }
 
-    private void AddContact(){
+    private void AddVehicle(){
+        final String manufacturer = editTextManufacturer.getText().toString().trim();
+        final String model = editTextModel.getText().toString().trim();
+        final String type = editTextType.getText().toString().trim();
+        final String color = editTextColor.getText().toString().trim();
+        final String plateno = editTextPlateNo.getText().toString().trim();
+        final String engineno = editTextEngineNo.getText().toString().trim();
 
-        final String givenname = editTextGivenname.getText().toString().trim();
-        final String middlename = editTextMiddlename.getText().toString().trim();
-        final String familyname = editTextFamilyname.getText().toString().trim();
-        final String phonenumber = editTextphoneNumber.getText().toString().trim();
-        final String email = editTextEmail.getText().toString().trim();
-        final String relationship = editTextRelationship.getText().toString().trim();
-
-        if(givenname.isEmpty()) {
-            editTextGivenname.setError("Given name is required");
-            editTextGivenname.requestFocus();
+        if(manufacturer.isEmpty()) {
+            editTextManufacturer.setError("Vehicle Manufacturer is required");
+            editTextManufacturer.requestFocus();
             return;
         }
 
 
-        if(middlename.isEmpty()) {
-            editTextMiddlename.setError("Middle name is required");
-            editTextMiddlename.requestFocus();
+        if(model.isEmpty()) {
+            editTextModel.setError("Vehicle Model is required");
+            editTextModel.requestFocus();
             return;
         }
 
-        if(familyname.isEmpty()) {
-            editTextFamilyname.setError("Family name is required");
-            editTextFamilyname.requestFocus();
+        if(type.isEmpty()) {
+            editTextType.setError("Vehicle Type Password is required");
+            editTextType.requestFocus();
             return;
         }
 
-        if(phonenumber.isEmpty()) {
-            editTextphoneNumber.setError("Phone number is required");
-            editTextphoneNumber.requestFocus();
+        if(color.isEmpty()) {
+            editTextColor.setError("Vehicle Color is required");
+            editTextColor.requestFocus();
             return;
         }
 
-        if(email.isEmpty()) {
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
+
+        if(plateno.isEmpty()) {
+            editTextPlateNo.setError("Vehicle Plate No. is required");
+            editTextPlateNo.requestFocus();
             return;
         }
 
-        if(relationship.isEmpty()) {
-            editTextRelationship.setError("Relationship is required");
-            editTextRelationship.requestFocus();
+        if(engineno.isEmpty()) {
+            editTextType.setError("Vehicle Engine No. Password is required");
+            editTextType.requestFocus();
             return;
         }
 
         progressBar.setVisibility(View.VISIBLE);
 
-        Contact contact = new Contact(
-                givenname,
-                middlename,
-                familyname,
-                phonenumber,
-                email,
-                relationship
+        Vehicle vehicle = new Vehicle(
+                manufacturer,
+                model,
+                type,
+                color,
+                plateno,
+                engineno
         );
 
-        FirebaseDatabase.getInstance().getReference("Contacts/ContactThree/ContactInfo")
+        FirebaseDatabase.getInstance().getReference("Vehicles/VehicleThree/VehicleInfo")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .setValue(contact).addOnCompleteListener(new OnCompleteListener<Void>() {
+                .setValue(vehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     //finish();
-                    Toast.makeText(Contact3Activity.this, "Contact Registered", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Vehicle3Activity.this, "Vehicle Registered", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -219,7 +220,7 @@ public class Contact3Activity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.buttonAdd:
-                AddContact();
+                AddVehicle();
                 break;
         }
     }

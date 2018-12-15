@@ -1,6 +1,5 @@
 package com.example.asus.drivepal;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -12,10 +11,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,7 +39,7 @@ public class Profile extends Fragment implements View.OnClickListener {
 
     private static final int CHOOSE_IMAGE = 101;
     private ImageView imageView;
-    private EditText editTextDisplayName, editTextEmail, editTextPassword, editTextName, editTextLicenseNo;
+    private TextView editTextDisplayName, editTextEmail, editTextPassword, editTextName, editTextLicenseNo;
     private Uri uriProfileImage;
     private ProgressBar progressBar;
     private String profileImageUrl;
@@ -64,6 +64,15 @@ public class Profile extends Fragment implements View.OnClickListener {
         imageView = (ImageView) (getView().findViewById(R.id.imageView));
         progressBar = (ProgressBar) (getView().findViewById(R.id.progressbar));
 
+        Button button = (Button) (getView().findViewById(R.id.buttonUpdatePassword));
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+                startActivity(intent);
+            }
+        });
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -85,14 +94,16 @@ public class Profile extends Fragment implements View.OnClickListener {
                         final  String email = dataS.child("email").getValue(String.class);
                         final  String licenseNo = dataS.child("licenseNo").getValue(String.class);
 
-                        editTextEmail = (EditText)(getView().findViewById(R.id.editTextEmail));
-                        //editTextPassword = (EditText)(getView().findViewById(R.id.editTextPassword));
-                        editTextName = (EditText)(getView().findViewById(R.id.editTextName));
-                        editTextLicenseNo = (EditText)(getView().findViewById(R.id.editTextLicenseNo));
+                        editTextEmail = (TextView) (getView().findViewById(R.id.editTextEmail));
+                        //editTextPassword = (TextView)(getView().findViewById(R.id.editTextPassword));
+                        editTextName = (TextView)(getView().findViewById(R.id.editTextName));
+                        editTextLicenseNo = (TextView)(getView().findViewById(R.id.editTextLicenseNo));
 
                         editTextEmail.setText(email);
                         editTextName.setText(name);
                         editTextLicenseNo.setText(licenseNo);
+
+
                     }
 
                     onDataChange(dataS);
@@ -217,8 +228,6 @@ public class Profile extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-
-
     }
 
 }

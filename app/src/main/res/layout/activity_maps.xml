@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,6 +16,7 @@
         tools:context=".MapsActivity" />
 
     <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
@@ -25,12 +27,12 @@
         android:id="@+id/relLayout1">
 
         <ImageView
-            android:layout_width="15dp"
-            android:layout_height="15dp"
             android:id="@+id/ic_magnify"
+            android:layout_width="30dp"
+            android:layout_height="28dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_magnify_green"/>
+            android:src="@drawable/ic_magnify_green" />
 
         <AutoCompleteTextView
             android:singleLine="true"
@@ -135,7 +137,7 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:singleLine="true"
-            android:text="000.0"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="28dp"
@@ -153,7 +155,6 @@
             android:textColor="@color/colorPrimaryDark"
             android:textSize="14dp"
             android:textStyle="bold" />
-
 
     </RelativeLayout>
 
@@ -290,7 +291,163 @@
             android:textSize="16dp"
             android:textStyle="bold" />
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/warningLayout"
+        android:layout_width="match_parent"
+        android:layout_height="268dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/place_info"
+        android:background="@drawable/white_border"
+        android:elevation="10dp">
+
+        <RelativeLayout
+            android:id="@+id/red"
+            android:layout_width="match_parent"
+            android:layout_height="147dp"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/red_border"
+            android:elevation="10dp">
+
+            <ImageView
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:layout_centerInParent="true"
+                android:padding="10dp"
+                android:src="@drawable/ic_warning" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="81dp"
+            android:text="Warning!"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="#000"
+            android:textSize="24sp"
+            android:textStyle="bold|italic"
+            android:typeface="normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="44dp"
+            android:gravity="center"
+            android:text="Your speed is beyond the limit. Please slow down."
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textSize="16sp"
+            android:typeface="normal" />
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/mapType"
+        android:layout_width="294dp"
+        android:layout_height="212dp"
+        android:layout_alignStart="@+id/relLayout1"
+        android:layout_centerVertical="true"
+        android:background="@drawable/green_border"
+        android:elevation="10dp">
+
+        <CheckBox
+            android:id="@+id/ch_dark"
+            android:layout_width="144dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/ch_satellite"
+            android:onClick="onCheckboxClicked"
+            android:text="Dark"
+            android:textSize="20sp" />
+
+        <CheckBox
+            android:id="@+id/ch_retro"
+            android:layout_width="144dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:onClick="onCheckboxClicked"
+            android:text="Retro"
+            android:textSize="20sp" />
+
+        <CheckBox
+            android:id="@+id/ch_silver"
+            android:layout_width="144dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/ch_default"
+            android:onClick="onCheckboxClicked"
+            android:text="Silver"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:text="Map Type"
+            android:textSize="22sp"
+            tools:text="Map Type" />
+
+        <CheckBox
+            android:id="@+id/ch_default"
+            android:layout_width="143dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/ch_satellite"
+            android:layout_alignParentEnd="true"
+            android:checked="true"
+            android:onClick="onCheckboxClicked"
+            android:text="Default "
+            android:textSize="20sp" />
+
+        <CheckBox
+            android:id="@+id/ch_satellite"
+            android:layout_width="143dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:onClick="onCheckboxClicked"
+            android:text="Satellite "
+            android:textSize="20sp" />
+
+        <CheckBox
+            android:id="@+id/ch_terrain"
+            android:layout_width="143dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/ch_satellite"
+            android:onClick="onCheckboxClicked"
+            android:text="Terrain "
+            android:textSize="20sp" />
+
+        <CheckBox
+            android:id="@+id/ch_hybrid"
+            android:layout_width="143dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/ch_dark"
+            android:onClick="onCheckboxClicked"
+            android:text="Hybrid "
+            android:textSize="20sp" />
+
+        <CheckBox
+            android:id="@+id/ch_night"
+            android:layout_width="144dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/ch_terrain"
+            android:onClick="onCheckboxClicked"
+            android:text="Night "
+            android:textSize="20sp" />
+
     </RelativeLayout>
+
+</RelativeLayout>

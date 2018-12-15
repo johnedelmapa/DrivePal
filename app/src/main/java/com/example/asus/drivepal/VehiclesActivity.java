@@ -30,6 +30,8 @@ public class VehiclesActivity extends AppCompatActivity implements View.OnClickL
             case R.id.textViewVehicle2:
                 startActivity(new Intent(this, Vehicle2Activity.class));
                 break;
+            case R.id.textViewVehicle3:
+                startActivity(new Intent(this, Vehicle3Activity.class));
 
         }
     }

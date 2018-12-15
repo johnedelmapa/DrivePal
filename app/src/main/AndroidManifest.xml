@@ -8,6 +8,7 @@
          location permissions for the 'MyLocation' functionality. 
     -->
 
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -91,8 +92,14 @@
             android:name=".Vehicle1Activity"
             android:parentActivityName=".VehiclesActivity"
             android:theme="@style/DrivePalTheme" />
+
+        <activity
+            android:name=".Vehicle3Activity"
+            android:parentActivityName=".VehiclesActivity"
+            android:theme="@style/DrivePalTheme" />
+
         <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".ForgetPasswordActivity"></activity>
+        <activity android:name=".ForgetPasswordActivity" />
     </application>
 
 </manifest>

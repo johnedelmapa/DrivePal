@@ -43,8 +43,6 @@ public class Dashboard extends Fragment implements View.OnClickListener {
         TextView textView1 = getView().findViewById(R.id.textViewTime);
         textView1.setText(time1);
 
-
-
     }
 
     @Nullable
@@ -54,7 +52,6 @@ public class Dashboard extends Fragment implements View.OnClickListener {
 
 
     }
-
 
     @Override
     public void onClick(View view) {
@@ -76,7 +73,6 @@ public class Dashboard extends Fragment implements View.OnClickListener {
                 break;
 
         }
-
 
     }
 }

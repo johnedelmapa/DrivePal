@@ -7,6 +7,28 @@
     android:background="@color/lightGreen">
 
     <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="183dp"
+        android:hint="Licence No."
+        android:inputType="textPersonName"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="229dp"
+        android:hint="Fullname"
+        android:inputType="textPersonName"
+        android:textColor="#000000" />
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -31,8 +53,9 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/editTextEmail"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="227dp"
         android:fontFamily="sans-serif"
         android:paddingTop="18dp"
         android:text="Personal Information:"
@@ -42,36 +65,53 @@
         android:textSize="16sp"
         android:textStyle="italic" />
 
-    <EditText
-        android:id="@+id/editTextEmail"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:hint="Email"
+        android:inputType="textPersonName"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/editTextEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="256dp"
         android:ems="10"
         android:hint="Email"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:textColor="#000000"
+        android:textSize="18dp" />
 
 
-    <EditText
+    <TextView
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editTextEmail"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="210dp"
         android:ems="10"
         android:hint="Fullname"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:textColor="#000000"
+        android:textSize="18dp" />
 
-    <EditText
+    <TextView
         android:id="@+id/editTextLicenseNo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="166dp"
+        android:layout_marginBottom="164dp"
         android:ems="10"
         android:hint="Licence No."
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:textColor="#000000"
+        android:textSize="18dp" />
 
 
     <Button
