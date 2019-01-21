@@ -2,16 +2,15 @@ package com.example.asus.drivepal.models;
 
 public class Vehicle {
 
-    public String manufacturer, model, type, color, plateno, engineno;
+    public String manufacturer, model, color, plateno, engineno;
 
     public Vehicle(){
 
     }
 
-    public Vehicle(String manufacturer, String model, String type, String color, String plateno, String engineno) {
+    public Vehicle(String manufacturer, String model, String color, String plateno, String engineno) {
         this.manufacturer = manufacturer;
         this.model = model;
-        this.type = type;
         this.color = color;
         this.plateno = plateno;
         this.engineno = engineno;
@@ -31,14 +30,6 @@ public class Vehicle {
 
     public void setModel(String model) {
         this.model = model;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getColor() {

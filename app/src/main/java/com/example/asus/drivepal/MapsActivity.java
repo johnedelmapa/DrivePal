@@ -17,7 +17,9 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,14 +29,18 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.example.asus.drivepal.models.PlaceInfo;
 import com.example.asus.drivepal.models.PolygonTest;
+import com.example.asus.drivepal.models.Violation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -43,6 +49,7 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
@@ -53,6 +60,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -64,6 +73,13 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -80,6 +96,8 @@ import java.util.List;
 import java.util.Formatter;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -91,6 +109,7 @@ import android.content.Context;
 import android.support.v4.app.ActivityCompat;
 import android.view.Menu;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
@@ -111,11 +130,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "Navigate and pin your destination", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Navigate and pin your destination", Toast.LENGTH_LONG).show();
         Log.d(TAG, "onMapReady: Navigate and pin your destination");
         mMap = googleMap;
 
-      //  mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.dark));
+        LatLng one = new LatLng(10.613618, 122.912933);
+        LatLng two = new LatLng(10.72531,  123.029415);
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        //add them to builder
+        builder.include(one);
+        builder.include(two);
+
+        LatLngBounds bounds = builder.build();
+
+        //get width and height to current display screen
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+
+        // 20% padding
+        int padding = (int) (width * 0.20);
+
+        //set latlong bounds
+        mMap.setLatLngBoundsForCameraTarget(bounds);
+
+        //move camera to fill the bound to screen
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding));
+
+        //set zoom to level to current so that you won't be able to zoom out viz. move outside bounds
+        mMap.setMinZoomPreference(mMap.getCameraPosition().zoom);
 
         if (mLocationPermissionsGranted) {
             getDeviceLocation();
@@ -140,8 +184,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-
     private static final String TAG = "MapsActivity";
+
+    private FirebaseDatabase mFirebaseDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference myRef;
+    private String userID;
+    FirebaseAuth firebaseAuth;
+    String FinalCurrentUser;
 
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -157,8 +208,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private AutoCompleteTextView mSearchText;
     private ImageView mGps, mInfo, mPlacePicker, mSatellite, mTraffic;
     private RelativeLayout lTraffic;
-    public RelativeLayout warning;
-    public RelativeLayout mType;
+    public RelativeLayout warning, onewayViolation;
+    public RelativeLayout mType, chooseVehicle, ArrivalLayout;
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
@@ -174,13 +225,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public String cSpeed;
     public PolygonTest mPoly = new PolygonTest();
 
-    public CheckBox ch_default, ch_satellite, ch_terrain, ch_hybrid, ch_night, ch_dark, ch_retro, ch_silver;
+    public ImageView ch_default, ch_satellite, ch_terrain, ch_hybrid, ch_night, ch_dark, ch_retro, ch_silver;
 
     public MediaPlayer alert;
 
     ArrayList<LatLng> listPoints;
 
-    public TextView txtSpeedLimit;
+    public TextView txtSpeedLimit, textViewVehicle1, textViewVehicle2, textViewVehicle3;
 
     private static final int COLOR_BLACK_ARGB = 0xff000000;
     private static final int COLOR_WHITE_ARGB = 0xffffffff;
@@ -189,9 +240,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int COLOR_ORANGE_ARGB = 0xffF57F17;
     private static final int COLOR_BLUE_ARGB = 0xffF9A825;
     private static final int COLOR_TRANSPARENT = 0xcccccc;
-    private static final int POLYGON_STROKE_WIDTH_PX = 8;
+    private static final int POLYGON_STROKE_WIDTH_PX = 5;
     private static final int PATTERN_DASH_LENGTH_PX = 20;
     private static final int PATTERN_GAP_LENGTH_PX = 20;
+
+    public String violationType1, violationType2, LicenseNo, fullName, PlateNo, Manufacturer1, Model1, Color1;
+    public Double CurrentLat, Currentlong;
+    public Double DestinationLat = 0.0;
+    public Double DestinationLong = 0.0;
+    public TextView currentlat, currentlng, deslat, deslng, distanceDetails;
+    public Button buttonOk;
+    public static int nav = 0;
+    public static int entryPoint = 0;
+    public static int violationTrigger = 0;
+    public static int oneWayCondition = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -199,6 +261,49 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         //Never Sleep the phone
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("Users");
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        FinalCurrentUser = firebaseUser.getUid();
+
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataS: dataSnapshot.getChildren()){
+                    if(FinalCurrentUser.equals(dataS.getRef().getKey())) {
+                        final String name = dataS.child("fullname").getValue(String.class);
+                        final  String licenseNo = dataS.child("licenseNo").getValue(String.class);
+
+                        LicenseNo = licenseNo;
+                        fullName = name;
+                    }
+
+                    onDataChange(dataS);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+        violationType1 = "Over Speeding";
+        violationType2 = "One Way";
+
+
 
         listPoints = new ArrayList<>();
 
@@ -235,21 +340,37 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mTraffic = (ImageView) findViewById(R.id.info_traffic);
         lTraffic = (RelativeLayout) findViewById(R.id.traffic_layout);
         warning = (RelativeLayout) findViewById(R.id.warningLayout);
+        onewayViolation = (RelativeLayout) findViewById(R.id.onewayWarning);
         mType = (RelativeLayout) findViewById(R.id.mapType);
+        chooseVehicle = (RelativeLayout) findViewById(R.id.chooseVehicle);
+        ArrivalLayout = (RelativeLayout) findViewById(R.id.ArrivalLayout);
 
-        ch_default = (CheckBox) findViewById(R.id.ch_default);
-        ch_satellite = (CheckBox) findViewById(R.id.ch_satellite);
-        ch_terrain = (CheckBox) findViewById(R.id.ch_terrain);
-        ch_hybrid = (CheckBox) findViewById(R.id.ch_hybrid);
+        buttonOk = (Button) findViewById(R.id.buttonOk);
+        ch_default = (ImageView) findViewById(R.id.ch_default);
+        ch_satellite = (ImageView) findViewById(R.id.ch_satellite);
+        ch_terrain = (ImageView) findViewById(R.id.ch_terrain);
+        ch_hybrid = (ImageView) findViewById(R.id.ch_hybrid);
 
-        ch_dark = (CheckBox) findViewById(R.id.ch_dark);
-        ch_night = (CheckBox) findViewById(R.id.ch_night);
-        ch_retro = (CheckBox) findViewById(R.id.ch_retro);
-        ch_silver = (CheckBox) findViewById(R.id.ch_silver);
+        ch_dark = (ImageView) findViewById(R.id.ch_dark);
+        ch_night = (ImageView) findViewById(R.id.ch_night);
+        ch_retro = (ImageView) findViewById(R.id.ch_retro);
+        ch_silver = (ImageView) findViewById(R.id.ch_silver);
 
         txtSpeedLimit = (TextView) findViewById(R.id.txtSpeedLimit);
+        textViewVehicle1 = (TextView) findViewById(R.id.textViewVehicle1);
+        textViewVehicle2 = (TextView) findViewById(R.id.textViewVehicle2);
+        textViewVehicle3 = (TextView) findViewById(R.id.textViewVehicle3);
+
+        currentlat = (TextView) findViewById(R.id.currentlat);
+        currentlng = (TextView) findViewById(R.id.currentlng);
+        deslat = (TextView) findViewById(R.id.deslat);
+        deslng = (TextView) findViewById(R.id.deslng);
+        distanceDetails = (TextView) findViewById(R.id.distanceDetails);
+
 
         getLocationPermission();
+
+
     }
 
     // All required functions of gps speedometer
@@ -257,10 +378,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     {
         super.finish();
         System.exit(0);
-    }
-
-    public String GetCurrentSpeed (String speed) {
-        return speed;
     }
 
     private void updateSpeed(CLocation location) {
@@ -302,15 +419,142 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             double clongitude = currentLocation.getLongitude();
                             double clatitude = currentLocation.getLatitude();
 
+
+                            Polygon testingEntry = mMap.addPolygon(new PolygonOptions().clickable(true).add(
+                                    new LatLng(10.626837, 122.979022),
+                                    new LatLng(10.626594, 122.978984),
+                                    new LatLng(10.626652, 122.978630),
+                                    new LatLng(10.626900, 122.978689),
+                                    new LatLng(10.626837, 122.979022)
+                            ));
+
+                            testingEntry.setStrokeWidth(POLYGON_STROKE_WIDTH_PX);
+                            testingEntry.setStrokeColor(COLOR_TRANSPARENT);
+                            testingEntry.setFillColor(COLOR_TRANSPARENT);
+                            List listPointstestingEntry = testingEntry.getPoints();
+                            LatLng[] arrayLatLngtestingEntry  = new LatLng[listPointstestingEntry.size()];
+                            for(int i = 0; i < listPointstestingEntry.size(); i++){
+                                arrayLatLngtestingEntry[i]= (LatLng)listPointstestingEntry.get(i);
+                            }
+
+
+                            Polygon testingZonez = mMap.addPolygon(new PolygonOptions().clickable(true).add(
+                                    new LatLng(10.626895, 122.978620),
+                                    new LatLng(10.626658, 122.978587),
+                                    new LatLng(10.626747, 122.978008),
+                                    new LatLng(10.626974, 122.978057),
+                                    new LatLng(10.626895, 122.978620)
+                            ));
+                            testingZonez.setStrokeWidth(POLYGON_STROKE_WIDTH_PX);
+                            testingZonez.setStrokeColor(COLOR_TRANSPARENT);
+                            testingZonez.setFillColor(COLOR_TRANSPARENT);
+                            List listPointstestingZonez = testingZonez.getPoints();
+                            LatLng[] arrayLatLngtestingZonez  = new LatLng[listPointstestingZonez.size()];
+                            for(int i = 0; i < listPointstestingZonez.size(); i++){
+                                arrayLatLngtestingZonez[i]= (LatLng)listPointstestingZonez.get(i);
+                            }
+
+
+                            Polygon testingExit = mMap.addPolygon(new PolygonOptions().clickable(true).add(
+                                    new LatLng(10.627000, 122.977987),
+                                    new LatLng(10.626737, 122.977949),
+                                    new LatLng(10.626779, 122.977746),
+                                    new LatLng(10.627000, 122.977783),
+                                    new LatLng(10.627000, 122.977987)
+                            ));
+
+                            testingExit.setStrokeWidth(POLYGON_STROKE_WIDTH_PX);
+                            testingExit.setStrokeColor(COLOR_TRANSPARENT);
+                            testingExit.setFillColor(COLOR_TRANSPARENT);
+                            List listPointstestingExit = testingExit.getPoints();
+                            LatLng[] arrayLatLngtestingExit  = new LatLng[listPointstestingExit.size()];
+                            for(int i = 0; i < listPointstestingExit.size(); i++){
+                                arrayLatLngtestingExit[i]= (LatLng)listPointstestingExit.get(i);
+                            }
+
+
+                            if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLngtestingEntry)) {
+                                Toast.makeText(MapsActivity.this, "You are about to enter a one way zone, please turn around", Toast.LENGTH_SHORT).show();
+                                entryPoint = 1;
+                                oneWayCondition = 1;
+                            }
+
+                            if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLngtestingZonez) && entryPoint == 1) {
+                                WarningTriggerOneWay();
+                                if(oneWayCondition == 1) {
+                                    ReportTriggerOneWay();
+                                    oneWayCondition = 0;
+                                }
+                            } else {
+                                onewayViolation.setVisibility(View.GONE);
+                            }
+
+
+                            if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLngtestingExit)) {
+                                entryPoint = 0;
+                            }
+
+
+                            Polygon lizaresEntry = mMap.addPolygon(new PolygonOptions().clickable(true).add(
+                                    new LatLng(10.658164, 122.949485),
+                                    new LatLng(10.657995, 122.949378),
+                                    new LatLng(10.658185, 122.948998),
+                                    new LatLng(10.658348, 122.949137),
+                                    new LatLng(10.658164, 122.949485)
+                            ));
+
+                            lizaresEntry.setStrokeColor(COLOR_GREEN_ARGB);
+                            lizaresEntry.setFillColor(COLOR_TRANSPARENT);
+                            List listPointslizaresEntry = lizaresEntry.getPoints();
+                            LatLng[] arrayLatLnglizaresEntry  = new LatLng[listPointslizaresEntry.size()];
+                            for(int i = 0; i < listPointslizaresEntry.size(); i++){
+                                arrayLatLnglizaresEntry[i]= (LatLng)listPointslizaresEntry.get(i);
+                            }
+
+                            Polygon lizaresZone = mMap.addPolygon(new PolygonOptions().clickable(true).add(
+                                    new LatLng(10.658348, 122.949137),
+                                    new LatLng(10.658169, 122.949067),
+                                    new LatLng(10.658517, 122.948365),
+                                    new LatLng(10.658686, 122.948488),
+                                    new LatLng(10.658348, 122.949137)
+                            ));
+
+                            lizaresZone.setStrokeColor(COLOR_ORANGE_ARGB);
+                            lizaresZone.setFillColor(COLOR_TRANSPARENT);
+                            List listPointslizaresZone = lizaresZone.getPoints();
+                            LatLng[] arrayLatLnglizaresZone  = new LatLng[listPointslizaresZone.size()];
+                            for(int i = 0; i < listPointslizaresZone.size(); i++){
+                                arrayLatLnglizaresZone[i]= (LatLng)listPointslizaresZone.get(i);
+                            }
+
+
+
+                            if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLnglizaresEntry)) {
+                                 Toast.makeText(MapsActivity.this, "You are about to enter a one way zone, please turn around", Toast.LENGTH_SHORT).show();
+                                 entryPoint = 1;
+                            }
+
+                            if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLnglizaresZone) && entryPoint == 1) {
+                                Toast.makeText(MapsActivity.this, "You've been report for one way violation", Toast.LENGTH_SHORT).show();
+//                                entryPoint = 0;
+                            }
+
+
                             Polygon alijisRoad = mMap.addPolygon(new PolygonOptions().clickable(true).add(
-                                    new LatLng(10.647369, 122.935117),
-                                    new LatLng(10.634889, 122.957535),
-                                    new LatLng(10.635606, 122.957896),
-                                    new LatLng(10.647626, 122.935625),
-                                    new LatLng(10.647369, 122.935117)));
+                                    new LatLng(10.647309, 122.935426),
+                                    new LatLng(10.635062, 122.957768),
+                                    new LatLng(10.632763, 122.960175),
+                                    new LatLng(10.629254, 122.983449),
+                                    new LatLng(10.630045, 122.983588),
+                                    new LatLng(10.633166, 122.963120),
+                                    new LatLng(10.633472, 122.960321),
+                                    new LatLng(10.636139, 122.957039),
+                                    new LatLng(10.647567, 122.935544),
+                                    new LatLng(10.647309, 122.935426)
+                            ));
                             alijisRoad.setStrokeWidth(POLYGON_STROKE_WIDTH_PX);
-                            alijisRoad.setStrokeColor(COLOR_GREEN_ARGB);
-                            alijisRoad.setFillColor(COLOR_BLUE_ARGB);
+                            alijisRoad.setStrokeColor(COLOR_TRANSPARENT);
+                            alijisRoad.setFillColor(COLOR_TRANSPARENT);
                             List listPointsAlijis = alijisRoad.getPoints();
                             LatLng[] arrayLatLngAlijis = new LatLng[listPointsAlijis.size()];
                             for(int i = 0; i < listPointsAlijis.size(); i++){
@@ -318,48 +562,141 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             }
 
 
-                            Polygon polygon1 = mMap.addPolygon(new PolygonOptions().clickable(true).add(
-                                            new LatLng(10.628769, 122.978000),
-                                            new LatLng(10.626301, 122.977667),
-                                            new LatLng(10.625974, 122.980069),
-                                            new LatLng(10.628400, 122.980391),
-                                            new LatLng(10.628769, 122.978000)));
-                            polygon1.setStrokeWidth(POLYGON_STROKE_WIDTH_PX);
-                            polygon1.setStrokeColor(COLOR_GREEN_ARGB);
-                            polygon1.setFillColor(COLOR_PURPLE_ARGB);
-                            List listPoints = polygon1.getPoints();
-
-                            LatLng[] arrayLatLng = new LatLng[listPoints.size()];
-                            for(int i = 0; i < listPoints.size(); i++){
-                                arrayLatLng[i]= (LatLng)listPoints.get(i);
+                            Polygon lacsonRoad = mMap.addPolygon(new PolygonOptions().clickable(true).add(
+                                    new LatLng(10.652110, 122.943354),
+                                    new LatLng(10.654451, 122.944406),
+                                    new LatLng(10.655458, 122.944513),
+                                    new LatLng(10.656512, 122.944684),
+                                    new LatLng(10.698395, 122.961845),
+                                    new LatLng(10.704468, 122.962081),
+                                    new LatLng(10.704498, 122.962425),
+                                    new LatLng(10.698417, 122.962382),
+                                    new LatLng(10.656308, 122.944939),
+                                    new LatLng(10.654621, 122.944810),
+                                    new LatLng(10.651985, 122.943630),
+                                    new LatLng(10.652110, 122.943354)
+                            ));
+                            lacsonRoad.setStrokeWidth(POLYGON_STROKE_WIDTH_PX);
+                            lacsonRoad.setStrokeColor(COLOR_TRANSPARENT);
+                            lacsonRoad.setFillColor(COLOR_TRANSPARENT);
+                            List listPointsLacson = lacsonRoad.getPoints();
+                            LatLng[] arrayLatLngLacson = new LatLng[listPointsLacson.size()];
+                            for(int i = 0; i < listPointsLacson.size(); i++){
+                                arrayLatLngLacson[i]= (LatLng)listPointsLacson.get(i);
                             }
-                            if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLng)){
-                                Toast.makeText(MapsActivity.this, "Geo-fencing Testing ", Toast.LENGTH_LONG).show();
-                                txtSpeedLimit.setText("001.0");
 
-                                if (speed >= 0010.0) {
+                            Polygon testingZone = mMap.addPolygon(new PolygonOptions().clickable(true).add(
+                                    new LatLng(10.628737, 122.978021),
+                                    new LatLng(10.626259, 122.977635),
+                                    new LatLng(10.625943, 122.980081),
+                                    new LatLng(10.628379, 122.980370),
+                                    new LatLng(10.628737, 122.978021)
+                            ));
+                            testingZone.setStrokeWidth(POLYGON_STROKE_WIDTH_PX);
+                            testingZone.setStrokeColor(COLOR_TRANSPARENT);
+                            testingZone.setFillColor(COLOR_TRANSPARENT);
+                            List listPointsTesting = testingZone.getPoints();
+                            LatLng[] arrayLatLngTesting = new LatLng[listPointsTesting.size()];
+                            for(int i = 0; i < listPointsTesting.size(); i++){
+                                arrayLatLngTesting[i]= (LatLng)listPointsTesting.get(i);
+                            }
+
+
+                            Polygon panaadRoad = mMap.addPolygon(new PolygonOptions().clickable(true).add(
+                                    new LatLng(10.623579, 122.967392),
+                                    new LatLng(10.625503, 122.962581),
+                                    new LatLng(10.626853, 122.964351),
+                                    new LatLng(10.626890, 122.966120),
+                                    new LatLng(10.625645, 122.968266),
+                                    new LatLng(10.623489, 122.967510),
+                                    new LatLng(10.623579, 122.967392)
+
+                            ));
+                            panaadRoad.setStrokeWidth(POLYGON_STROKE_WIDTH_PX);
+                            panaadRoad.setStrokeColor(COLOR_TRANSPARENT);
+                            panaadRoad.setFillColor(COLOR_TRANSPARENT);
+                            List listPointsPanaad = panaadRoad.getPoints();
+                            LatLng[] arrayLatLngPanaad = new LatLng[listPointsPanaad.size()];
+                            for(int i = 0; i < listPointsPanaad.size(); i++){
+                                arrayLatLngPanaad[i]= (LatLng)listPointsPanaad.get(i);
+                            }
+
+
+                            Polygon benildeRoad = mMap.addPolygon(new PolygonOptions().clickable(true).add(
+                                    new LatLng(10.623473, 122.967344),
+                                    new LatLng(10.620457, 122.963777),
+                                    new LatLng(10.620147, 122.963948),
+                                    new LatLng(10.621813, 122.968131),
+                                    new LatLng(10.623433, 122.967656),
+                                    new LatLng(10.623473, 122.967344)
+
+                            ));
+                            benildeRoad.setStrokeWidth(POLYGON_STROKE_WIDTH_PX);
+                            benildeRoad.setStrokeColor(COLOR_TRANSPARENT);
+                            benildeRoad.setFillColor(COLOR_TRANSPARENT);
+                            List listPointsBenilde = benildeRoad.getPoints();
+                            LatLng[] arrayLatLngBenilde = new LatLng[listPointsBenilde.size()];
+                            for(int i = 0; i < listPointsBenilde.size(); i++){
+                                arrayLatLngBenilde[i]= (LatLng)listPointsBenilde.get(i);
+                            }
+
+
+                            if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLngAlijis)) {
+                                txtSpeedLimit.setText("080.0");
+                                if (speed >= 0080.0) {
                                     WarningTrigger();
+                                    ReportTrigger();
                                 } else {
-
                                     try {
                                         warning.setVisibility(View.GONE);
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
                                 }
-
-                            } else {
-                                Toast.makeText(MapsActivity.this, "You are not in the testing zone", Toast.LENGTH_LONG).show();
-                            }
-
-                            if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLngAlijis)) {
-                                Toast.makeText(MapsActivity.this, "Alijis Road Speed Limit", Toast.LENGTH_LONG).show();
+                            } else if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLngTesting)){
                                 txtSpeedLimit.setText("060.0");
-
+                                // Toast.makeText(MapsActivity.this, "You are in the testing zone", Toast.LENGTH_SHORT).show();
                                 if (speed >= 060.0) {
                                     WarningTrigger();
+                                    ReportTrigger();
                                 } else {
-
+                                    try {
+                                        warning.setVisibility(View.GONE);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLngLacson)){
+                                txtSpeedLimit.setText("080.0");
+                                if (speed >= 0080.0) {
+                                    WarningTrigger();
+                                    ReportTrigger();
+                                } else {
+                                    try {
+                                        warning.setVisibility(View.GONE);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLngPanaad)){
+                                txtSpeedLimit.setText("040.0");
+                                if (speed >= 0040.0) {
+                                    WarningTrigger();
+                                    ReportTrigger();
+                                } else {
+                                    try {
+                                        warning.setVisibility(View.GONE);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else if (mPoly.PointIsInRegion(clatitude, clongitude,  arrayLatLngBenilde)){
+                                txtSpeedLimit.setText("020.0");
+                                Toast.makeText(MapsActivity.this, "School Zone", Toast.LENGTH_SHORT).show();
+                                if (speed >= 0020.0) {
+                                    WarningTrigger();
+                                    ReportTrigger();
+                                } else {
                                     try {
                                         warning.setVisibility(View.GONE);
                                     } catch (Exception e) {
@@ -378,10 +715,91 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }catch (SecurityException e){
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
         }
-
-
     }
 
+    public double getCurrentLat(Double lat) {
+        return lat;
+    }
+
+    public double getCurrentLong(Double lng) {
+        return lng;
+    }
+
+    public double getDestinationLat(Double lat) {
+        return lat;
+    }
+
+    public double getDistinationLong(Double lng) {
+        return lng;
+    }
+
+
+    public void ReportTrigger(){
+
+        final String violationtype = violationType1.toString().trim();
+        final String fullname = fullName.toString().trim();
+        final String licenseno = LicenseNo.toString().trim();
+        final String plateno = PlateNo.toString().trim();
+
+        final String color = Color1.toString().trim();
+        final String manufacturer = Manufacturer1.toString().trim();
+        final String model = Model1.toString().trim();
+
+        Violation violation = new Violation(violationtype, fullname, licenseno, plateno, color, manufacturer, model);
+
+        FirebaseDatabase.getInstance().getReference("Violations")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push()
+                .setValue(violation).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    //finish();
+                    Toast.makeText(MapsActivity.this, "You've been reported", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+    public void resetEntrypoint(){
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                entryPoint = 0;
+            }
+        }, 10000);
+    }
+
+
+    public void ReportTriggerOneWay(){
+
+        final String violationtype = violationType2.toString().trim();
+        final String fullname = fullName.toString().trim();
+        final String licenseno = LicenseNo.toString().trim();
+        final String plateno = PlateNo.toString().trim();
+
+        final String color = Color1.toString().trim();
+        final String manufacturer = Manufacturer1.toString().trim();
+        final String model = Model1.toString().trim();
+
+        Violation violation = new Violation(violationtype, fullname, licenseno, plateno, color, manufacturer, model);
+
+        FirebaseDatabase.getInstance().getReference("Violations")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push()
+                .setValue(violation).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    //finish();
+                    Toast.makeText(MapsActivity.this, "You've been reported", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 
     public void WarningTrigger(){
 
@@ -399,10 +817,111 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
         } else {
 
-           alert = MediaPlayer.create(MapsActivity.this,R.raw.warning);
-           alert.start();
+            alert = MediaPlayer.create(MapsActivity.this,R.raw.warning);
+            alert.start();
         }
 
+    }
+
+    public void WarningTriggerOneWay(){
+        onewayViolation.setVisibility(View.VISIBLE);
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(1500);
+//        alert = MediaPlayer.create(MapsActivity.this,R.raw.oneway);
+//        alert.start();
+
+    }
+
+    public void SuccussfullyArrived(){
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(500);
+        alert = MediaPlayer.create(MapsActivity.this,R.raw.success);
+        alert.start();
+    }
+
+    public void getVehicleOne(){
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference1 = firebaseDatabase.getReference("Vehicles/VehicleOne/VehicleInfo");
+        databaseReference1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataS: dataSnapshot.getChildren()){
+                    if(FinalCurrentUser.equals(dataS.getRef().getKey())) {
+                        final String placeno = dataS.child("plateno").getValue(String.class);
+                        final String model = dataS.child("model").getValue(String.class);
+                        final String manufacturer = dataS.child("manufacturer").getValue(String.class);
+                        final String color = dataS.child("color").getValue(String.class);
+                        PlateNo = placeno;
+                        Model1 = model;
+                        Manufacturer1 = manufacturer;
+                        Color1 = color;
+                    }
+                    onDataChange(dataS);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void getVehicleTwo(){
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference1 = firebaseDatabase.getReference("Vehicles/VehicleTwo/VehicleInfo");
+        databaseReference1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataS: dataSnapshot.getChildren()){
+                    if(FinalCurrentUser.equals(dataS.getRef().getKey())) {
+                        final String placeno = dataS.child("plateno").getValue(String.class);
+                        final String model = dataS.child("model").getValue(String.class);
+                        final String manufacturer = dataS.child("manufacturer").getValue(String.class);
+                        final String color = dataS.child("color").getValue(String.class);
+
+                        PlateNo = placeno;
+                        Model1 = model;
+                        Manufacturer1 = manufacturer;
+                        Color1 = color;
+                    }
+                    onDataChange(dataS);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void getVehicleThree(){
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference1 = firebaseDatabase.getReference("Vehicles/VehicleThree/VehicleInfo");
+        databaseReference1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataS: dataSnapshot.getChildren()){
+                    if(FinalCurrentUser.equals(dataS.getRef().getKey())) {
+                        final String placeno = dataS.child("plateno").getValue(String.class);
+                        final String model = dataS.child("model").getValue(String.class);
+                        final String manufacturer = dataS.child("manufacturer").getValue(String.class);
+                        final String color = dataS.child("color").getValue(String.class);
+
+                        PlateNo = placeno;
+                        Model1 = model;
+                        Manufacturer1 = manufacturer;
+                        Color1 = color;
+                    }
+                    onDataChange(dataS);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     private boolean useMetricUnits() {
@@ -419,6 +938,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             CLocation myLocation = new CLocation(location, this.useMetricUnits());
             this.updateSpeed(myLocation);
         }
+
+        getDistance();
     }
 
     @Override
@@ -446,8 +967,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     } //End required functions of gps speedometer
 
 
+
+
     private void init(){
         Log.d(TAG, "init: initializing");
+
+//        LatLngBounds Bacolod = new LatLngBounds(new LatLng(10.613618, 122.912933),
+//                new LatLng(10.72531, 123.029415));
+
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
@@ -457,8 +984,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .build();
         mSearchText.setOnItemClickListener(mAutocompleteClickListener);
 
+        AutocompleteFilter autocompleteFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(Place.TYPE_COUNTRY)
+                .setCountry("PH")
+                .build();
+
         mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient,
-                LAT_LNG_BOUNDS, null);
+                LAT_LNG_BOUNDS, autocompleteFilter);
 
         mSearchText.setAdapter(mPlaceAutocompleteAdapter);
 
@@ -519,15 +1051,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
         mSatellite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              if(mType.getVisibility() == (View.GONE)) {
-                  mType.setVisibility(View.VISIBLE);
-              } else {
-                  mType.setVisibility(View.GONE);
-              }
+                if(mType.getVisibility() == (View.GONE)) {
+                    mType.setVisibility(View.VISIBLE);
+                } else {
+                    mType.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -543,6 +1074,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        textViewVehicle1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseVehicle.setVisibility(View.GONE);
+                getVehicleOne();
+            }
+        });
+
+        textViewVehicle2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseVehicle.setVisibility(View.GONE);
+                getVehicleTwo();
+            }
+        });
+
+        textViewVehicle3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseVehicle.setVisibility(View.GONE);
+                getVehicleThree();
+            }
+        });
 
         hideSoftKeyboard();
 
@@ -555,104 +1109,47 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.ch_default:
                 mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.def));
                 mMap.setMapType(mMap.MAP_TYPE_NORMAL);
-                ch_satellite.setChecked(false);
-                ch_terrain.setChecked(false);
-                ch_hybrid.setChecked(false);
-                ch_night.setChecked(false);
-                ch_night.setChecked(false);
-                ch_dark.setChecked(false);
-                ch_retro.setChecked(false);
-                ch_silver.setChecked(false);
                 break;
 
             case R.id.ch_satellite:
                 mMap.setMapType(mMap.MAP_TYPE_SATELLITE);
-                ch_default.setChecked(false);
-                ch_terrain.setChecked(false);
-                ch_hybrid.setChecked(false);
-                ch_night.setChecked(false);
-                ch_night.setChecked(false);
-                ch_dark.setChecked(false);
-                ch_retro.setChecked(false);
-                ch_silver.setChecked(false);
                 break;
 
             case R.id.ch_terrain:
                 mMap.setMapType(mMap.MAP_TYPE_TERRAIN);
-                ch_default.setChecked(false);
-                ch_satellite.setChecked(false);
-                ch_hybrid.setChecked(false);
-                ch_night.setChecked(false);
-                ch_night.setChecked(false);
-                ch_dark.setChecked(false);
-                ch_retro.setChecked(false);
-                ch_silver.setChecked(false);
                 break;
 
             case R.id.ch_hybrid:
                 mMap.setMapType(mMap.MAP_TYPE_HYBRID);
-                ch_default.setChecked(false);
-                ch_satellite.setChecked(false);
-                ch_terrain.setChecked(false);
-                ch_night.setChecked(false);
-                ch_night.setChecked(false);
-                ch_dark.setChecked(false);
-                ch_retro.setChecked(false);
-                ch_silver.setChecked(false);
                 break;
 
             case R.id.ch_silver:
                 mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.silver));
                 mMap.setMapType(mMap.MAP_TYPE_NORMAL);
-                ch_default.setChecked(false);
-                ch_satellite.setChecked(false);
-                ch_terrain.setChecked(false);
-                ch_hybrid.setChecked(false);
-                ch_night.setChecked(false);
-                ch_dark.setChecked(false);
-                ch_retro.setChecked(false);
                 break;
 
             case R.id.ch_retro:
                 mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.retro));
                 mMap.setMapType(mMap.MAP_TYPE_NORMAL);
-                ch_default.setChecked(false);
-                ch_satellite.setChecked(false);
-                ch_terrain.setChecked(false);
-                ch_hybrid.setChecked(false);
-                ch_night.setChecked(false);
-                ch_dark.setChecked(false);
-                ch_silver.setChecked(false);
                 break;
 
             case R.id.ch_dark:
                 mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.dark));
                 mMap.setMapType(mMap.MAP_TYPE_NORMAL);
-                ch_default.setChecked(false);
-                ch_satellite.setChecked(false);
-                ch_terrain.setChecked(false);
-                ch_hybrid.setChecked(false);
-                ch_night.setChecked(false);
-                ch_retro.setChecked(false);
-                ch_silver.setChecked(false);
                 break;
 
             case R.id.ch_night:
                 mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.night));
                 mMap.setMapType(mMap.MAP_TYPE_NORMAL);
-                ch_default.setChecked(false);
-                ch_satellite.setChecked(false);
-                ch_terrain.setChecked(false);
-                ch_hybrid.setChecked(false);
-                ch_dark.setChecked(false);
-                ch_retro.setChecked(false);
-                ch_silver.setChecked(false);
                 break;
         }
+
     }
 
 
     private void MapDirection(){
+
+        nav = 1;
 
         //Reset marker when already 2
         if (listPoints.size() == 2) {
@@ -667,8 +1164,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
+
+
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: found location!");
+
                             //Point One/Current Location
                             point1 = getPoint1(point1);
                             listPoints.add(point1);
@@ -680,9 +1180,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             // LatLng point2 = new LatLng(10.6840, 122.9563);
                             point2 = getPoint2(point2);
                             listPoints.add(point2);
+
                             MarkerOptions markerOptions2 = new MarkerOptions();
                             markerOptions2.position(point2);
                             mMap.addMarker(markerOptions2);
+
+                            Circle circle = mMap.addCircle(new CircleOptions()
+                                    .center(point2)
+                                    .radius(30)
+                                    .strokeColor(android.R.color.transparent)
+                                    .fillColor(Color.GREEN));
 
 
                             if (listPoints.size() == 2) {
@@ -710,6 +1217,63 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    private void getDistance(){
+        try {
+            if (mLocationPermissionsGranted) {
+
+                final Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+
+                            Location currentLocation = (Location) task.getResult();
+                            double clongitude = currentLocation.getLongitude();
+                            double clatitude = currentLocation.getLatitude();
+
+                            CurrentLat = getCurrentLat(clatitude);
+                            Currentlong = getCurrentLong(clongitude);
+
+                            double end_lat = DestinationLat;
+                            double end_lng = DestinationLong;
+
+                                Location loc1 = new Location("");
+                                loc1.setLatitude(CurrentLat);
+                                loc1.setLongitude(Currentlong);
+
+                                Location loc2 = new Location("");
+                                loc2.setLatitude(DestinationLat);
+                                loc2.setLongitude(DestinationLong);
+
+                                float distanceInMeters = loc1.distanceTo(loc2);
+
+//                                Toast.makeText(MapsActivity.this, distanceInMeters + "Meters", Toast.LENGTH_SHORT).show();
+
+
+                                if (distanceInMeters <= 30 && nav == 1) {
+                                    nav = 0;
+                                    ArrivalLayout.setVisibility(View.VISIBLE);
+                                    SuccussfullyArrived();
+                                    buttonOk.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            ArrivalLayout.setVisibility(View.GONE);
+                                            listPoints.clear();
+                                            mMap.clear();
+                                        }
+                                    });
+
+                                }
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e) {
+            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
+        }
+
+    }
+
     private String getRequestUrl(LatLng origin, LatLng dest) {
         //Value of origin
         String str_org = "origin=" + origin.latitude +","+origin.longitude;
@@ -724,9 +1288,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String param = str_org +"&" + str_dest + "&" +sensor+"&" +mode+"&"+key;
         //Output format
         String output = "json";
-
-
-
         //Create url to request
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param;
         return url;
@@ -1082,6 +1643,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             point2 = new LatLng(place.getViewport().getCenter().latitude,
                     place.getViewport().getCenter().longitude);
+
+
+            DestinationLat = getDestinationLat(place.getViewport().getCenter().latitude);
+            DestinationLong = getDistinationLong( place.getViewport().getCenter().longitude);
+
+            getDestinationLat(DestinationLat);
+            getDistinationLong(DestinationLong);
 
             getPoint2(point2);
             places.release();

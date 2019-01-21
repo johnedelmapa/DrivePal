@@ -9,4 +9,62 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
+
+    <string-array name="manufacturer_array">
+        <item>Toyota</item>
+        <item>Ford</item>
+        <item>Honda</item>
+        <item>Isuzu</item>
+        <item>Nissan</item>
+        <item>Kawasaki</item>
+        <item>Yamaha</item>
+    </string-array>
+
+    <string-array name="model_toyota">
+        <item>Fortuner</item>
+        <item>Hilux</item>
+        <item>Vios</item>
+        <item>Wigo</item>
+    </string-array>
+
+    <string-array name="model_ford">
+        <item>Explorer</item>
+        <item>Ecosport</item>
+        <item>Everest</item>
+        <item>Ranger</item>
+    </string-array>
+
+    <string-array name="model_honda">
+        <item>CRV</item>
+        <item>City</item>
+        <item>Jazz</item>
+        <item>Civic Type-R</item>
+    </string-array>
+
+    <string-array name="model_isuzu">
+        <item>Crosswind</item>
+        <item>mu-X</item>
+        <item>D-Max</item>
+    </string-array>
+
+    <string-array name="model_nissan">
+        <item>Almera</item>
+        <item>Navara</item>
+        <item>Urvan</item>
+        <item>Patrol</item>
+    </string-array>
+
+    <string-array name="model_kawasaki">
+        <item>Ninja</item>
+        <item>Fury</item>
+        <item>Rouser</item>
+        <item>Boxer</item>
+    </string-array>
+
+    <string-array name="model_yamaha">
+        <item>Mio Sporty</item>
+        <item>Mio Aerox</item>
+        <item>Sniper</item>
+        <item>NMAX</item>
+    </string-array>
 </resources>

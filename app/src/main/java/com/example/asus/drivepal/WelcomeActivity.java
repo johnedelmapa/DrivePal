@@ -17,7 +17,6 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.buttonSignup).setOnClickListener(this);
         findViewById(R.id.buttonLogin).setOnClickListener(this);
 
-
     }
 
 

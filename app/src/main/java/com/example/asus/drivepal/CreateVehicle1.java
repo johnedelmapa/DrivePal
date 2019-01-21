@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class VehicleActivity extends AppCompatActivity implements View.OnClickListener, OnItemSelectedListener {
+public class CreateVehicle1 extends AppCompatActivity implements View.OnClickListener, OnItemSelectedListener {
 
     ProgressBar progressBar;
     EditText editTextType, editTextColor, editTextPlateNo, editTextEngineNo;
@@ -259,7 +259,7 @@ public class VehicleActivity extends AppCompatActivity implements View.OnClickLi
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     //finish();
-                                    startActivity(new Intent(VehicleActivity.this, ContactActivity.class));
+                                    Toast.makeText(CreateVehicle1.this, "Vehicle Registered Successfully", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }

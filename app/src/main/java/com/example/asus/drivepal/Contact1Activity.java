@@ -58,7 +58,6 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
         editTextRelationship = (EditText) findViewById(R.id.editTextRelationship);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
 
-
         findViewById(R.id.buttonAdd).setOnClickListener(this);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -87,9 +86,7 @@ public class Contact1Activity extends AppCompatActivity implements View.OnClickL
                 try { showData(dataSnapshot);
 
                 } catch(Exception e) {
-
                     Toast.makeText(Contact1Activity.this, "No Registered Contact", Toast.LENGTH_SHORT).show();
-
                 }
             }
 

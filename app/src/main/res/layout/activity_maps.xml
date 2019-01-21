@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -348,106 +349,449 @@
 
     <RelativeLayout
         android:visibility="gone"
+        android:id="@+id/onewayWarning"
+        android:layout_width="match_parent"
+        android:layout_height="268dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/place_info"
+        android:background="@drawable/white_border"
+        android:elevation="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="147dp"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/red_border"
+            android:elevation="10dp">
+
+            <ImageView
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:layout_centerInParent="true"
+                android:padding="10dp"
+                android:src="@drawable/ic_warning" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="81dp"
+            android:text="Warning!"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="#000"
+            android:textSize="24sp"
+            android:textStyle="bold|italic"
+            android:typeface="normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="44dp"
+            android:gravity="center"
+            android:text="You are in a one-way direction. Please turn around."
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textSize="16sp"
+            android:typeface="normal" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/mapType"
         android:layout_width="294dp"
         android:layout_height="212dp"
+        android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/relLayout1"
-        android:layout_centerVertical="true"
-        android:background="@drawable/green_border"
+        android:layout_marginTop="158dp"
+        android:background="@drawable/white_border"
         android:elevation="10dp">
-
-        <CheckBox
-            android:id="@+id/ch_dark"
-            android:layout_width="144dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/ch_satellite"
-            android:onClick="onCheckboxClicked"
-            android:text="Dark"
-            android:textSize="20sp" />
-
-        <CheckBox
-            android:id="@+id/ch_retro"
-            android:layout_width="144dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:onClick="onCheckboxClicked"
-            android:text="Retro"
-            android:textSize="20sp" />
-
-        <CheckBox
-            android:id="@+id/ch_silver"
-            android:layout_width="144dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignTop="@+id/ch_default"
-            android:onClick="onCheckboxClicked"
-            android:text="Silver"
-            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dp"
-            android:text="Map Type"
-            android:textSize="22sp"
-            tools:text="Map Type" />
-
-        <CheckBox
-            android:id="@+id/ch_default"
-            android:layout_width="143dp"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/ch_satellite"
-            android:layout_alignParentEnd="true"
-            android:checked="true"
-            android:onClick="onCheckboxClicked"
-            android:text="Default "
-            android:textSize="20sp" />
-
-        <CheckBox
-            android:id="@+id/ch_satellite"
-            android:layout_width="143dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:onClick="onCheckboxClicked"
-            android:text="Satellite "
-            android:textSize="20sp" />
-
-        <CheckBox
-            android:id="@+id/ch_terrain"
-            android:layout_width="143dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/ch_satellite"
-            android:onClick="onCheckboxClicked"
-            android:text="Terrain "
-            android:textSize="20sp" />
-
-        <CheckBox
-            android:id="@+id/ch_hybrid"
-            android:layout_width="143dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/ch_dark"
-            android:onClick="onCheckboxClicked"
-            android:text="Hybrid "
-            android:textSize="20sp" />
-
-        <CheckBox
-            android:id="@+id/ch_night"
-            android:layout_width="144dp"
-            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/ch_terrain"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:text="MAP TYPE"
+            android:textSize="14sp"
+            tools:text="MAP TYPE" />
+
+        <TextView
+            android:id="@+id/retro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView6"
+            android:layout_centerVertical="true"
+            android:text="RETRO"
+            android:textSize="10sp"
+            tools:text="RETRO" />
+
+        <TextView
+            android:id="@+id/silver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/ch_silver"
+            android:layout_centerVertical="true"
+            android:text="SILVER"
+            android:textSize="10sp"
+            tools:text="SILVER" />
+
+        <TextView
+            android:id="@+id/dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/ch_dark"
+            android:layout_centerVertical="true"
+            android:text="DARK"
+            android:textSize="10sp"
+            tools:text="DARK" />
+
+        <TextView
+            android:id="@+id/night"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/ch_night"
+            android:layout_centerVertical="true"
+            android:text="NIGHT"
+            android:textSize="10sp"
+            tools:text="NIGHT" />
+
+        <TextView
+            android:id="@+id/default1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/textView6"
+            android:layout_marginBottom="12dp"
+            android:text="DEFAULT"
+            android:textSize="10sp"
+            tools:text="DEFAULT" />
+
+
+        <TextView
+            android:id="@+id/terrain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/ch_silver"
+            android:layout_alignTop="@+id/default1"
+            android:text="TERRAIN"
+            android:textSize="10sp"
+            tools:text="TERRAIN" />
+
+        <TextView
+            android:id="@+id/satellite1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/ch_dark"
+            android:layout_alignTop="@+id/terrain"
+            android:text="SATELLITE"
+            android:textSize="10sp"
+            tools:text="SATELLITE" />
+
+        <TextView
+            android:id="@+id/hybrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/ch_night"
+            android:layout_alignTop="@+id/terrain"
+            android:text="HYBRID"
+            android:textSize="10sp"
+            tools:text="HYBRID" />
+
+        <ImageView
+            android:id="@+id/ch_retro"
+            android:layout_width="54dp"
+            android:layout_height="51dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/textView6"
+            android:layout_marginTop="43dp"
+            android:background="@drawable/ic_retro"
             android:onClick="onCheckboxClicked"
-            android:text="Night "
-            android:textSize="20sp" />
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/ch_silver"
+            android:layout_width="54dp"
+            android:layout_height="51dp"
+            android:layout_alignTop="@+id/ch_retro"
+            android:layout_toEndOf="@+id/textView6"
+            android:background="@drawable/ic_silver"
+            android:onClick="onCheckboxClicked"
+            android:padding="10dp" />
+
+
+        <ImageView
+            android:id="@+id/ch_dark"
+            android:layout_width="54dp"
+            android:layout_height="51dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/ch_retro"
+            android:layout_marginEnd="89dp"
+            android:background="@drawable/ic_dark"
+            android:onClick="onCheckboxClicked"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/ch_night"
+            android:layout_width="54dp"
+            android:layout_height="51dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/ch_retro"
+            android:layout_marginEnd="18dp"
+            android:background="@drawable/ic_night"
+            android:onClick="onCheckboxClicked"
+            android:padding="10dp" />
+
+
+        <ImageView
+            android:id="@+id/ch_default"
+            android:layout_width="54dp"
+            android:layout_height="51dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/textView6"
+            android:layout_marginBottom="33dp"
+            android:background="@drawable/ic_default"
+            android:onClick="onCheckboxClicked"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/ch_terrain"
+            android:layout_width="54dp"
+            android:layout_height="51dp"
+            android:layout_alignStart="@+id/ch_silver"
+            android:layout_alignTop="@+id/ch_default"
+            android:background="@drawable/ic_terrain"
+            android:onClick="onCheckboxClicked"
+            android:padding="10dp" />
+
+
+        <ImageView
+            android:id="@+id/ch_satellite"
+            android:layout_width="54dp"
+            android:layout_height="51dp"
+            android:layout_alignStart="@+id/ch_dark"
+            android:layout_alignTop="@+id/ch_default"
+            android:background="@drawable/ic_satellite"
+            android:onClick="onCheckboxClicked"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/ch_hybrid"
+            android:layout_width="54dp"
+            android:layout_height="51dp"
+            android:layout_alignStart="@+id/ch_night"
+            android:layout_alignTop="@+id/ch_default"
+            android:background="@drawable/ic_hybrid"
+            android:onClick="onCheckboxClicked"
+            android:padding="10dp" />
 
     </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/chooseVehicle"
+        android:layout_width="match_parent"
+        android:layout_height="340dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="120dp"
+        android:background="@drawable/green_border"
+        android:elevation="10dp">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="15dp"
+            android:text="Choose your vehicle"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="16dp" />
+
+        <View
+            style="@style/Divider"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="50dp" />
+
+        <TextView
+            android:id="@+id/textViewVehicle1"
+            android:layout_width="276dp"
+            android:layout_height="69dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="74dp"
+            android:layout_weight="1"
+            android:background="@drawable/box"
+            android:gravity="center"
+            android:text="Vehicle 1"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+
+        <TextView
+            android:id="@+id/textViewVehicle2"
+            android:layout_width="276dp"
+            android:layout_height="69dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="112dp"
+            android:layout_weight="1"
+            android:background="@drawable/box"
+            android:gravity="center"
+            android:text="Vehicle 2"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+
+        <TextView
+            android:id="@+id/textViewVehicle3"
+            android:layout_width="276dp"
+            android:layout_height="69dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp"
+            android:layout_weight="1"
+            android:background="@drawable/box"
+            android:gravity="center"
+            android:text="Vehicle 3"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/distanceInfo"
+        android:layout_width="292dp"
+        android:layout_height="78dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/info_traffic"
+        android:layout_marginTop="-26dp"
+        android:background="@drawable/green_border"
+        android:elevation="10dp">
+
+
+        <TextView
+            android:id="@+id/currentlat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/currentlng"
+            android:hint="Clat" />
+
+        <TextView
+            android:id="@+id/currentlng"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="18dp"
+            android:hint="Clng" />
+
+        <TextView
+            android:id="@+id/deslat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/currentlat"
+            android:layout_below="@+id/currentlng"
+            android:hint="Clat" />
+
+        <TextView
+            android:id="@+id/deslng"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/currentlat"
+            android:hint="Dlat" />
+
+        <TextView
+            android:id="@+id/distanceDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="72dp"
+            android:hint="Distance " />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/ArrivalLayout"
+        android:layout_width="match_parent"
+        android:layout_height="268dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/place_info"
+        android:background="@drawable/white_border"
+        android:elevation="10dp">
+
+        <RelativeLayout
+            android:id="@+id/green"
+            android:layout_width="match_parent"
+            android:layout_height="147dp"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/green_border"
+            android:elevation="10dp">
+
+            <ImageView
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:layout_centerInParent="true"
+                android:padding="10dp"
+                android:src="@drawable/ic_success" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="81dp"
+            android:text="Arrived!"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="#000"
+            android:textSize="24sp"
+            android:textStyle="bold|italic"
+            android:typeface="normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="44dp"
+            android:gravity="center"
+            android:text="Successfully arrived in destination."
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textSize="16sp"
+            android:typeface="normal" />
+
+        <Button
+            android:id="@+id/buttonOk"
+            style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_width="110dp"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/background_signup"
+            android:clickable="true"
+            android:padding="5dp"
+            android:text="Ok"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="10sp" />
+
+    </RelativeLayout>
+
+
 
 </RelativeLayout>

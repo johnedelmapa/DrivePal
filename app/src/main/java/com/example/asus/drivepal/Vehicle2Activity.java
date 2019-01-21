@@ -1,18 +1,16 @@
 package com.example.asus.drivepal;
 
-import android.support.annotation.NonNull;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.asus.drivepal.models.Vehicle;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,7 +23,7 @@ public class Vehicle2Activity extends AppCompatActivity implements View.OnClickL
 
     private static final String TAG = "ViewDatabase";
     private ProgressBar progressBar;
-    private EditText editTextManufacturer, editTextModel, editTextType, editTextColor, editTextPlateNo, editTextEngineNo;
+    private TextView editTextManufacturer, editTextModel, editTextColor, editTextPlateNo, editTextEngineNo;
 
 
     private FirebaseDatabase mFirebaseDatabase;
@@ -33,6 +31,7 @@ public class Vehicle2Activity extends AppCompatActivity implements View.OnClickL
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
     private String userID;
+    public Button btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,51 +47,22 @@ public class Vehicle2Activity extends AppCompatActivity implements View.OnClickL
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
-        editTextManufacturer = (EditText) findViewById(R.id.editTextManufacturer);
-        editTextModel = (EditText) findViewById(R.id.editTextModel);
-        editTextType = (EditText) findViewById(R.id.editTextType);
-        editTextColor = (EditText) findViewById(R.id.editTextColor);
-        editTextPlateNo = (EditText) findViewById(R.id.editTextPlateNo);
-        editTextEngineNo = (EditText) findViewById(R.id.editTextEngineNo);
+        editTextManufacturer = (TextView) findViewById(R.id.editTextManufacturer);
+        editTextModel = (TextView) findViewById(R.id.editTextModel);
+        editTextColor = (TextView) findViewById(R.id.editTextColor);
+        editTextPlateNo = (TextView) findViewById(R.id.editTextPlateNo);
+        editTextEngineNo = (TextView) findViewById(R.id.editTextEngineNo);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
 
         findViewById(R.id.buttonAdd).setOnClickListener(this);
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    // User is signed in
-//                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-//                    toastMessage("Successfully signed in with: " + user.getEmail());
-//                } else {
-//                    // User is signed out
-//                    Log.d(TAG, "onAuthStateChanged:signed_out");
-//                    toastMessage("Successfully signed out.");
-//                }
-//                // ...
-            }
-
-        };
+        btn = (Button) findViewById(R.id.buttonAdd);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-
-                if (dataSnapshot.exists()) {
-//                    Toast.makeText(Vehicle2Activity.this, "No Records", Toast.LENGTH_SHORT).show();
-                    try { showData(dataSnapshot);
-
-                    } catch(Exception e) {
-
-                        Toast.makeText(Vehicle2Activity.this, "No Registered Vehicle", Toast.LENGTH_SHORT).show();
-
-                    }
-                } else {
-
+                try { showData(dataSnapshot); btn.setEnabled(false);
+                } catch(Exception e) {
+                    Toast.makeText(Vehicle2Activity.this, "No Registered Vehicle", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -106,17 +76,14 @@ public class Vehicle2Activity extends AppCompatActivity implements View.OnClickL
     private void showData(DataSnapshot dataSnapshot) {
         for(DataSnapshot ds : dataSnapshot.getChildren()){
             Vehicle uInfo = new Vehicle();
-
             uInfo.setManufacturer(ds.child(userID).getValue(Vehicle.class).getManufacturer());
             uInfo.setModel(ds.child(userID).getValue(Vehicle.class).getModel());
-            uInfo.setType(ds.child(userID).getValue(Vehicle.class).getType());
             uInfo.setColor(ds.child(userID).getValue(Vehicle.class).getColor());
             uInfo.setPlateno(ds.child(userID).getValue(Vehicle.class).getPlateno());
             uInfo.setEngineno(ds.child(userID).getValue(Vehicle.class).getEngineno());
 
             editTextManufacturer.setText(uInfo.getManufacturer());
             editTextModel.setText(uInfo.getModel());
-            editTextType.setText(uInfo.getType());
 
             editTextColor.setText(uInfo.getColor());
             editTextPlateNo.setText(uInfo.getPlateno());
@@ -125,103 +92,10 @@ public class Vehicle2Activity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
-
-    private void toastMessage(String message){
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
-    }
-
-    private void AddVehicle(){
-        final String manufacturer = editTextManufacturer.getText().toString().trim();
-        final String model = editTextModel.getText().toString().trim();
-        final String type = editTextType.getText().toString().trim();
-        final String color = editTextColor.getText().toString().trim();
-        final String plateno = editTextPlateNo.getText().toString().trim();
-        final String engineno = editTextEngineNo.getText().toString().trim();
-
-        if(manufacturer.isEmpty()) {
-            editTextManufacturer.setError("Vehicle Manufacturer is required");
-            editTextManufacturer.requestFocus();
-            return;
-        }
-
-
-        if(model.isEmpty()) {
-            editTextModel.setError("Vehicle Model is required");
-            editTextModel.requestFocus();
-            return;
-        }
-
-        if(type.isEmpty()) {
-            editTextType.setError("Vehicle Type Password is required");
-            editTextType.requestFocus();
-            return;
-        }
-
-        if(color.isEmpty()) {
-            editTextColor.setError("Vehicle Color is required");
-            editTextColor.requestFocus();
-            return;
-        }
-
-
-        if(plateno.isEmpty()) {
-            editTextPlateNo.setError("Vehicle Plate No. is required");
-            editTextPlateNo.requestFocus();
-            return;
-        }
-
-        if(engineno.isEmpty()) {
-            editTextType.setError("Vehicle Engine No. Password is required");
-            editTextType.requestFocus();
-            return;
-        }
-
-        progressBar.setVisibility(View.VISIBLE);
-
-        Vehicle vehicle = new Vehicle(
-                manufacturer,
-                model,
-                type,
-                color,
-                plateno,
-                engineno
-        );
-
-        FirebaseDatabase.getInstance().getReference("Vehicles/VehicleTwo/VehicleInfo")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .setValue(vehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                progressBar.setVisibility(View.GONE);
-                if (task.isSuccessful()) {
-                    //finish();
-                    Toast.makeText(Vehicle2Activity.this, "Vehicle Registered", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-    }
-
-
-    @Override
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.buttonAdd:
-                AddVehicle();
+                startActivity(new Intent(this, CreateVehicle2.class));
                 break;
         }
     }

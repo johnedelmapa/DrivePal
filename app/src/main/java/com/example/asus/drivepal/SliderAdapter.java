@@ -28,7 +28,6 @@ public class SliderAdapter extends PagerAdapter {
 
     };
 
-
     public String[] slide_headings = {
             "ROAD SAFETY PRECAUTIONS",
             "REPORT VIOLATION MECHANISM",
